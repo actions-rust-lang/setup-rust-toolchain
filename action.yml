@@ -1,0 +1,77 @@
+name: Setup Rust Toolchain for GitHub CI
+description: |
+  Setup specific Rust versions and integrate nicely into the ecosystem.
+  The action enabled caching of Rust tools and build artifacts and sets environment variables for faster and more efficient caching.
+  It also sets up problem matchers showing compilation and formatting issues.
+
+branding:
+  icon: "play"
+  color: "gray-dark"
+
+# Add option to install directly from rust-toolchain file
+# Blocked on rustup support: https://github.com/rust-lang/rustup/issues/2686
+#
+# The action is heavily inspired by https://github.com/dtolnay/rust-toolchain
+inputs:
+  toolchain:
+    description: "Rust toolchain specification -- see https://rust-lang.github.io/rustup/concepts/toolchains.html#toolchain-specification"
+    required: false
+    default: "stable"
+  target:
+    description: "Target triple to install for this toolchain"
+    required: false
+  components:
+    description: "Comma-separated list of components to be additionally installed"
+    required: false
+
+outputs:
+  rustc-version:
+    description: "Version as reported by `rustc --version`"
+    value: ${{steps.versions.outputs.rustc-version}}
+  cargo-version:
+    description: "Version as reported by `cargo --version`"
+    value: ${{steps.versions.outputs.cargo-version}}
+  rustup-version:
+    description: "Version as reported by `rustup --version`"
+    value: ${{steps.versions.outputs.rustup-version}}
+
+runs:
+  using: composite
+  steps:
+    - id: flags
+      run: |
+        : construct rustup command line
+        echo "::set-output name=targets::$(for t in ${targets//,/ }; do echo -n ' --target' $t; done)"
+        echo "::set-output name=components::$(for c in ${components//,/ }; do echo -n ' --component' $c; done)"
+        echo "::set-output name=downgrade::${{inputs.toolchain == 'nightly' && inputs.components && ' --allow-downgrade' || ''}}"
+      env:
+        targets: ${{inputs.target}}
+        components: ${{inputs.components}}
+      shell: bash
+    - name: rustup toolchain install ${{inputs.toolchain}}
+      run: |
+        rustup toolchain install ${{inputs.toolchain}}${{steps.flags.outputs.targets}}${{steps.flags.outputs.components}} --profile minimal${{steps.flags.outputs.downgrade}} --no-self-update
+        rustup default ${{inputs.toolchain}}
+      shell: bash
+    - name: Print installed versions
+      id: versions
+      run: |
+        echo "::set-output name=rustc-version::$(rustc --version)"
+        rustc --version
+        echo "::set-output name=cargo-version::$(cargo --version)"
+        cargo --version
+        echo "::set-output name=rustup-version::$(rustup --version)"
+        rustup --version
+      shell: bash
+
+    - name: "Setup Rust Caching"
+      uses: Swatinem/rust-cache@v1
+    - name: "Install Rust Problem Matcher"
+      run: echo "::add-matcher::${{ github.action_path }}/rust.json"
+      shell: bash
+    - name: "Setting Environment Variables"
+      run: |
+        echo "CARGO_INCREMENTAL=0" >> $GITHUB_ENV
+        echo "CARGO_PROFILE_DEV_DEBUG=0" >> $GITHUB_ENV
+        echo "RUSTFLAGS=-D warnings" >> $GITHUB_ENV
+      shell: bash
