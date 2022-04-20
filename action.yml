@@ -1,8 +1,7 @@
 name: Setup Rust Toolchain for GitHub CI
 description: |
-  Setup specific Rust versions and integrate nicely into the ecosystem.
-  The action enabled caching of Rust tools and build artifacts and sets environment variables for faster and more efficient caching.
-  It also sets up problem matchers showing compilation and formatting issues.
+  Setup specific Rust versions with caching pre-configured.
+  It provides problem matchers for cargo and rustfmt issues.
 
 branding:
   icon: "play"
