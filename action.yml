@@ -73,5 +73,6 @@ runs:
         echo "CARGO_INCREMENTAL=0" >> $GITHUB_ENV
         echo "CARGO_PROFILE_DEV_DEBUG=0" >> $GITHUB_ENV
         echo "CARGO_TERM_COLOR=always" >> $GITHUB_ENV
+        echo "RUST_BACKTRACE=short" >> $GITHUB_ENV
         echo "RUSTFLAGS=-D warnings" >> $GITHUB_ENV
       shell: bash
