@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Install rustup if not available in the CI environment. (Linux only)
     The code is taken from this issue: <https://github.com/dtolnay/rust-toolchain/pull/8>
+* Add rustc version output suitable as a cache key.
+    This is based on <https://github.com/dtolnay/rust-toolchain/pull/20> and <https://github.com/dtolnay/rust-toolchain/pull/17>.
 
 ## [1.0.1] - 2022-04-20
 
