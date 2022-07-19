@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+* Install rustup if not available in the CI environment. (Linux only)
+    The code is taken from this issue: <https://github.com/dtolnay/rust-toolchain/pull/8>
+
 ## [1.0.1] - 2022-04-20
 
 ### Added
