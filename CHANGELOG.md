@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Add rustc version output suitable as a cache key.
     This is based on <https://github.com/dtolnay/rust-toolchain/pull/20> and <https://github.com/dtolnay/rust-toolchain/pull/17>.
 
+### Changed
+
+* Update to `Swatinem/rust-cache@v2`.
+
 ## [1.0.1] - 2022-04-20
 
 ### Added

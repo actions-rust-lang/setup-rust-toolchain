@@ -80,7 +80,7 @@ runs:
       shell: bash
 
     - name: "Setup Rust Caching"
-      uses: Swatinem/rust-cache@v1
+      uses: Swatinem/rust-cache@v2
     - name: "Install Rust Problem Matcher"
       run: echo "::add-matcher::${{ github.action_path }}/rust.json"
       shell: bash
