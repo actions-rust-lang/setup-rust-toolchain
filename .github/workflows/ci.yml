@@ -13,9 +13,28 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        rust: [nightly, beta, stable]
+        rust: [
+          # Test with toolchain file override
+          "1.50",
+          "nightly",
+          "beta",
+          "stable",
+        ]
     steps:
       - uses: actions/checkout@v3
+      # Test toolchain file support
+      - name: Write rust-toolchain.toml
+        run: |
+          cat <<EOF >>rust-toolchain.toml
+          [toolchain]
+          channel = "nightly-2020-07-10"
+          components = [ "rustfmt", "rustc-dev" ]
+          targets = [ "wasm32-unknown-unknown", "thumbv2-none-eabi" ]
+          profile = "minimal"
+          EOF
+        shell: bash
+        if: matrix.rust == '1.50'
+
       - uses: ./
         name: Run actions-rust-lang/setup-rust-toolchain ${{matrix.rust}}
         id: toolchain
