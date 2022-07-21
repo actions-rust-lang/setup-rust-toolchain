@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2022-07-21
+
+### Added
+
+* Prefer toolchain definitions in `rust-toolchain` or `rust-toolchain.toml` files ([Toolchain File](https://rust-lang.github.io/rustup/overrides.html#the-toolchain-file)).
+    Other input values are ignored if either file is found.
+
 ## [1.1.0] - 2022-07-19
 
 ### Added

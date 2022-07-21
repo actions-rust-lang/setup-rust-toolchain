@@ -29,6 +29,8 @@ jobs:
 ## Inputs
 
 All inputs are optional.
+If a [toolchain file](https://rust-lang.github.io/rustup/overrides.html#the-toolchain-file) (i.e., `rust-toolchain` or `rust-toolchain.toml`) is found in the root of the repository, it takes precedence.
+All input values are ignored if a toolchain file exists.
 
 | Name         | Description                                                                       | Default |
 | ------------ | --------------------------------------------------------------------------------- | ------- |
