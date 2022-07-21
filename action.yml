@@ -60,22 +60,29 @@ runs:
       shell: bash
     - name: rustup toolchain install ${{inputs.toolchain}}
       run: |
-        rustup toolchain install ${{inputs.toolchain}}${{steps.flags.outputs.targets}}${{steps.flags.outputs.components}} --profile minimal${{steps.flags.outputs.downgrade}} --no-self-update
-        rustup default ${{inputs.toolchain}}
+        if [[ -f "rust-toolchain" || -f "rust-toolchain.toml" ]]
+        then
+          # Install the toolchain as specified in the file
+          # Might break at some point: https://github.com/rust-lang/rustup/issues/1397
+          rustup show
+        else
+          rustup toolchain install ${{inputs.toolchain}}${{steps.flags.outputs.targets}}${{steps.flags.outputs.components}} --profile minimal${{steps.flags.outputs.downgrade}} --no-self-update
+          rustup default ${{inputs.toolchain}}
+        fi
       shell: bash
 
     - name: Print installed versions
       id: versions
       run: |
-        echo "::set-output name=rustc-version::$(rustc +${{inputs.toolchain}} --version)"
-        rustc +${{inputs.toolchain}} --version --verbose
-        echo "::set-output name=cargo-version::$(cargo +${{inputs.toolchain}} --version)"
-        cargo +${{inputs.toolchain}} --version --verbose
-        echo "::set-output name=rustup-version::$(rustup +${{inputs.toolchain}} --version)"
-        rustup +${{inputs.toolchain}} --version
+        echo "::set-output name=rustc-version::$(rustc --version)"
+        rustc --version --verbose
+        echo "::set-output name=cargo-version::$(cargo --version)"
+        cargo --version --verbose
+        echo "::set-output name=rustup-version::$(rustup --version)"
+        rustup --version
 
-        DATE=$(rustc +${{inputs.toolchain}} --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')
-        HASH=$(rustc +${{inputs.toolchain}} --version --verbose | sed -ne 's/^commit-hash: //p')
+        DATE=$(rustc --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')
+        HASH=$(rustc --version --verbose | sed -ne 's/^commit-hash: //p')
         echo "::set-output name=cachekey::$(echo $DATE$HASH | head -c12)"
       shell: bash
 
