@@ -50,6 +50,19 @@ runs:
         targets: ${{inputs.target}}
         components: ${{inputs.components}}
       shell: bash
+    # The environment variables always need to be set before the caching action
+    - name: "Setting Environment Variables"
+      run: |
+        echo "CARGO_INCREMENTAL=0" >> $GITHUB_ENV
+        echo "CARGO_PROFILE_DEV_DEBUG=0" >> $GITHUB_ENV
+        echo "CARGO_TERM_COLOR=always" >> $GITHUB_ENV
+        echo "RUST_BACKTRACE=short" >> $GITHUB_ENV
+        echo "RUSTFLAGS=-D warnings" >> $GITHUB_ENV
+      shell: bash
+    - name: "Install Rust Problem Matcher"
+      run: echo "::add-matcher::${{ github.action_path }}/rust.json"
+      shell: bash
+
     - name: Install rustup, if needed
       run: |
         if ! command -v rustup &> /dev/null ; then
@@ -88,14 +101,3 @@ runs:
 
     - name: "Setup Rust Caching"
       uses: Swatinem/rust-cache@v2
-    - name: "Install Rust Problem Matcher"
-      run: echo "::add-matcher::${{ github.action_path }}/rust.json"
-      shell: bash
-    - name: "Setting Environment Variables"
-      run: |
-        echo "CARGO_INCREMENTAL=0" >> $GITHUB_ENV
-        echo "CARGO_PROFILE_DEV_DEBUG=0" >> $GITHUB_ENV
-        echo "CARGO_TERM_COLOR=always" >> $GITHUB_ENV
-        echo "RUST_BACKTRACE=short" >> $GITHUB_ENV
-        echo "RUSTFLAGS=-D warnings" >> $GITHUB_ENV
-      shell: bash

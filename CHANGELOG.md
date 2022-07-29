@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1] - 2022-07-29
+
+### Fixed
+
+* Set environment variables before invoking the cache action.
+    This ensures restoring and saving are using the same cache key.
+
 ## [1.2.0] - 2022-07-21
 
 ### Added
