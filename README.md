@@ -50,6 +50,7 @@ All input values are ignored if a toolchain file exists.
 | `toolchain`  | Rustup toolchain specifier e.g. `stable`, `nightly`, `1.42.0`.                    | stable  |
 | `target`     | Additional target support to install e.g. `wasm32-unknown-unknown`                |         |
 | `components` | Comma-separated string of additional components to install e.g. `clippy, rustfmt` |         |
+| `cache`      | Automatically configure Rust cache (using `Swatinem/rust-cache`)                  | true    |
 
 ## Outputs
 

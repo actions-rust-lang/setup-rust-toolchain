@@ -22,6 +22,10 @@ inputs:
   components:
     description: "Comma-separated list of components to be additionally installed"
     required: false
+  cache:
+    description: "Automatically configure Rust cache"
+    required: false
+    default: "true"
 
 outputs:
   rustc-version:
@@ -100,4 +104,5 @@ runs:
       shell: bash
 
     - name: "Setup Rust Caching"
+      if: inputs.cache == 'true'
       uses: Swatinem/rust-cache@v2

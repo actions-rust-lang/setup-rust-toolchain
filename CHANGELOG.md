@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+* An option to disable configuring Rust cache.
+
 ## [1.2.1] - 2022-07-29
 
 ### Fixed
