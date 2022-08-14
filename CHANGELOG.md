@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.1] - 2022-08-14
+
+### Changed
+
+* Use the sparse-registry on nightly for faster access to the crate registry on nightly.
+    <https://internals.rust-lang.org/t/call-for-testing-cargo-sparse-registry/16862>
+
 ## [1.3.0] - 2022-07-30
 
 ### Added
