@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.2] - 2022-09-15
+
+### Fixed
+
+* Fix setting `$CARGO_HOME` to a valid path, in case rustup is installed from the internet.
+    Thanks to @nahsi for providing the fix.
+
 ## [1.3.1] - 2022-08-14
 
 ### Changed
