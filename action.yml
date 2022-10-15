@@ -47,9 +47,9 @@ runs:
     - id: flags
       run: |
         : construct rustup command line
-        echo "::set-output name=targets::$(for t in ${targets//,/ }; do echo -n ' --target' $t; done)"
-        echo "::set-output name=components::$(for c in ${components//,/ }; do echo -n ' --component' $c; done)"
-        echo "::set-output name=downgrade::${{inputs.toolchain == 'nightly' && inputs.components && ' --allow-downgrade' || ''}}"
+        echo "targets=$(for t in ${targets//,/ }; do echo -n ' --target' $t; done)" >> $GITHUB_OUTPUT
+        echo "components=$(for c in ${components//,/ }; do echo -n ' --component' $c; done)" >> $GITHUB_OUTPUT
+        echo "downgrade=${{inputs.toolchain == 'nightly' && inputs.components && ' --allow-downgrade' || ''}}" >> $GITHUB_OUTPUT
       env:
         targets: ${{inputs.target}}
         components: ${{inputs.components}}
@@ -94,16 +94,16 @@ runs:
     - name: Print installed versions
       id: versions
       run: |
-        echo "::set-output name=rustc-version::$(rustc --version)"
+        echo "rustc-version=$(rustc --version)" >> $GITHUB_OUTPUT
         rustc --version --verbose
-        echo "::set-output name=cargo-version::$(cargo --version)"
+        echo "cargo-version=$(cargo --version)" >> $GITHUB_OUTPUT
         cargo --version --verbose
-        echo "::set-output name=rustup-version::$(rustup --version)"
+        echo "rustup-version=$(rustup --version)" >> $GITHUB_OUTPUT
         rustup --version
 
         DATE=$(rustc --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')
         HASH=$(rustc --version --verbose | sed -ne 's/^commit-hash: //p')
-        echo "::set-output name=cachekey::$(echo $DATE$HASH | head -c12)"
+        echo "cachekey=$(echo $DATE$HASH | head -c12)" >> $GITHUB_OUTPUT
       shell: bash
 
     - name: "Setup Rust Caching"
