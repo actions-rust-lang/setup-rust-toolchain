@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.5] - 2023-01-21
+
+### Changed
+
+* Use the newly stabilized setting to enable sparse registry access.
+    This speeds up access to the crate registry and is in addition to the unstable nightly env var.
+    <https://github.com/rust-lang/cargo/pull/11224>
+
 ## [1.3.4] - 2022-10-15
 
 ### Changed
