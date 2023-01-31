@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.6] - 2023-01-31
+
+### Fixed
+
+* The the correct environment variable to enable the sparse registry access.
+    The pull request originally had the wrong value, without `CARGO_` prefix.
+
 ## [1.3.5] - 2023-01-21
 
 ### Changed
