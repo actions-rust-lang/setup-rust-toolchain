@@ -63,11 +63,13 @@ runs:
         echo "RUST_BACKTRACE=short" >> $GITHUB_ENV
         echo "RUSTFLAGS=-D warnings" >> $GITHUB_ENV
         # Enable faster sparse index on nightly
+        # The value is ignored on stable and causes no problems
         # https://internals.rust-lang.org/t/call-for-testing-cargo-sparse-registry/16862
         echo "CARGO_UNSTABLE_SPARSE_REGISTRY=true" >> $GITHUB_ENV
         # Enable sparse index after stabilization
+        # This causes warnings on stable 1.67, e.g., when using "cargo add"
         # https://github.com/rust-lang/cargo/pull/11224
-        echo "CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse" >> $GITHUB_ENV
+        # echo "CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse" >> $GITHUB_ENV
       shell: bash
     - name: "Install Rust Problem Matcher"
       run: echo "::add-matcher::${{ github.action_path }}/rust.json"
