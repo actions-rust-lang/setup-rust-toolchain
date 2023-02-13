@@ -30,7 +30,7 @@ jobs:
         run: |
           cat <<EOF >>rust-toolchain.toml
           [toolchain]
-          channel = "nightly-2020-07-10"
+          channel = "nightly-2022-09-10"
           components = [ "rustfmt", "rustc-dev" ]
           targets = [ "wasm32-unknown-unknown", "thumbv2-none-eabi" ]
           profile = "minimal"
