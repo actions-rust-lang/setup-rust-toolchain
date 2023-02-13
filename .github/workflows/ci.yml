@@ -53,7 +53,7 @@ jobs:
         shell: bash
 
       # Test with creating a small project
-      - run: cargo init . --bin --name CI
+      - run: cargo init . --bin --name ci
       # Add tiny empty crate.
       # This checks that registry access works.
       - run: cargo add serde_as
