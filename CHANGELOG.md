@@ -11,7 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Only set environment variables, if they are not set before.
     This allows setting environment variables before using this action and keeping their values.
-    
+* Enable stable sparse registry, except on versions 1.66 and 1.67 where this leads to errors.
+
 ## [1.3.7] - 2023-01-31
 
 ### Fixed
