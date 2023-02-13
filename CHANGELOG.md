@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## [1.4.1] - 2023-02-13
+
+### Fixed
+
+* Fixed running on macOS #9 #10
+    The macOS images have an ancient version of bash, but the action relies on "newer" features than 2014.
+    We install bash via brew (already pre-installed) to have a new enough version.
+
+    The CI is extended to also run on Windows and macOS to catch such issues earlier in the future.
+
+    Thanks to @GeorgeHahn for reporting the issue.
+
 ## [1.4.0] - 2023-02-13
 
 ### Changed
