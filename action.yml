@@ -44,6 +44,13 @@ outputs:
 runs:
   using: composite
   steps:
+    # The later code uses "newer" bash features, which are not available in the ancient bash 3 (from 2014) of macOS
+    - name: Unbork mac
+      if: runner.os == 'macOS'
+      run: |
+        brew install bash
+      shell: bash
+
     - id: flags
       run: |
         : construct rustup command line
