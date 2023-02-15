@@ -37,7 +37,7 @@ jobs:
           [toolchain]
           channel = "nightly-2022-09-10"
           components = [ "rustfmt", "rustc-dev" ]
-          targets = [ "wasm32-unknown-unknown", "thumbv2-none-eabi" ]
+          targets = [ "wasm32-unknown-unknown", "thumbv7m-none-eabi" ]
           profile = "minimal"
           EOF
         shell: bash
