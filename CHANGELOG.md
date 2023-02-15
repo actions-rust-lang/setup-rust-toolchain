@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.2] - 2023-02-15
+
+### Fixed
+
+* Tweak sparse registry version regex to better work with 1.68 nightly versions.
+* Fix command not found issue
+
 ## [1.4.1] - 2023-02-13
 
 ### Fixed
