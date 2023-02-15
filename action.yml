@@ -131,8 +131,10 @@ runs:
     - name: "Enable cargo sparse registry on stable"
       run: |
         # except on 1.66 and 1.67, on which it is unstable
+        # Not all 1.68.0-nightly versions support it either
+        # https://github.com/dtolnay/rust-toolchain/pull/69#discussion_r1107268108
         if [[ ! -v CARGO_REGISTRIES_CRATES_IO_PROTOCOL ]]; then
-          if echo "${{steps.versions.outputs.rustc-version}}" | not grep -q '^rustc 1\.6[67]\.'; then
+          if echo "${{steps.versions.outputs.rustc-version}}" | grep --invert --quiet '^rustc \(1\.6[67]\.\|1\.68\.0-nightly\)'; then
             echo "CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse" >> $GITHUB_ENV
           fi
         fi
