@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.3] - 2023-02-21
+
+### Fixed
+
+* Executing the action twice for different toolchains now no longer fails around unstable features #12.
+    If multiple toolchains are installed, the "CARGO_REGISTRIES_CRATES_IO_PROTOCOL" can be downgraded to "git" if any of the installed toolchains require it.
+
 ## [1.4.2] - 2023-02-15
 
 ### Fixed
