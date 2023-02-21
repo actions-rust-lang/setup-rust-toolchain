@@ -85,6 +85,9 @@ runs:
         if [[ ! -v CARGO_UNSTABLE_SPARSE_REGISTRY ]]; then
           echo "CARGO_UNSTABLE_SPARSE_REGISTRY=true" >> $GITHUB_ENV
         fi
+        if [[ ! -v CARGO_REGISTRIES_CRATES_IO_PROTOCOL ]]; then
+          echo "CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse" >> $GITHUB_ENV
+        fi
       shell: bash
     - name: "Install Rust Problem Matcher"
       run: echo "::add-matcher::${{ github.action_path }}/rust.json"
@@ -126,17 +129,15 @@ runs:
         echo "cachekey=$(echo $DATE$HASH | head -c12)" >> $GITHUB_OUTPUT
       shell: bash
 
-    # Copied from dtolnay/rust-toolchain and adapted
-    # https://github.com/dtolnay/rust-toolchain/blob/25dc93b901a87e864900a8aec6c12e9aa794c0c3/action.yml#L100-L108
-    - name: "Enable cargo sparse registry on stable"
+    - name: "Downgrade registry access protocol when needed"
       run: |
-        # except on 1.66 and 1.67, on which it is unstable
-        # Not all 1.68.0-nightly versions support it either
+        # Not all versions support setting CARGO_REGISTRIES_CRATES_IO_PROTOCOL
+        # On versions 1.66, 1.67, and 1.68.0-nightly the value "sparse" is still unstable.
         # https://github.com/dtolnay/rust-toolchain/pull/69#discussion_r1107268108
-        if [[ ! -v CARGO_REGISTRIES_CRATES_IO_PROTOCOL ]]; then
-          if echo "${{steps.versions.outputs.rustc-version}}" | grep --invert --quiet '^rustc \(1\.6[67]\.\|1\.68\.0-nightly\)'; then
-            echo "CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse" >> $GITHUB_ENV
-          fi
+        # If we detect an incompatible value, set it to "git" which is always supported.
+        if [[ "${{steps.versions.outputs.rustc-version}}" =~ ^rustc\ (1\.6[67]\.|1\.68\.0-nightly) && "${CARGO_REGISTRIES_CRATES_IO_PROTOCOL}" == "sparse" ]]; then
+          echo "Downgrade cargo registry protocol to git"
+          echo "CARGO_REGISTRIES_CRATES_IO_PROTOCOL=git" >> $GITHUB_ENV
         fi
       shell: bash
 
