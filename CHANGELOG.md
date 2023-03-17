@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.4] - 2023-03-18
+
+### Fixed
+
+* Use color aware problem matcher.
+    The problem matcher currently runs against the colored terminal output ([Bug 1](https://github.com/actions/runner/issues/2341), [Bug 2](https://github.com/actions/runner/pull/2430)).
+    The previous matcher was not aware of ANSII color codes and did not work.
+
 ## [1.4.3] - 2023-02-21
 
 ### Fixed
