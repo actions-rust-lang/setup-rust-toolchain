@@ -26,6 +26,10 @@ inputs:
     description: "Automatically configure Rust cache"
     required: false
     default: "true"
+  rustflags:
+    description: "set RUSTFLAGS environment variable, set to empty string to avoid overwriting build.rustflags"
+    requred: false
+    default: "-D warnings"
 
 outputs:
   rustc-version:
@@ -76,8 +80,8 @@ runs:
         if [[ ! -v RUST_BACKTRACE ]]; then
           echo "RUST_BACKTRACE=short" >> $GITHUB_ENV
         fi
-        if [[ ! -v RUSTFLAGS ]]; then
-          echo "RUSTFLAGS=-D warnings" >> $GITHUB_ENV
+        if [[ -v "$NEW_RUSTFLAGS" ]]; then
+          echo "RUSTFLAGS="$NEW_RUSTFLAGS" >> $GITHUB_ENV
         fi
         # Enable faster sparse index on nightly
         # The value is ignored on stable and causes no problems
@@ -89,6 +93,8 @@ runs:
           echo "CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse" >> $GITHUB_ENV
         fi
       shell: bash
+      env:
+        NEW_RUSTFLAGS: ${{inputs.rustflags}}
     - name: "Install Rust Problem Matcher"
       run: echo "::add-matcher::${{ github.action_path }}/rust.json"
       shell: bash
