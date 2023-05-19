@@ -80,7 +80,7 @@ runs:
         if [[ ! -v RUST_BACKTRACE ]]; then
           echo "RUST_BACKTRACE=short" >> $GITHUB_ENV
         fi
-        if [[ -v NEW_RUSTFLAGS ]]; then
+        if [[ "$NEW_RUSTFLAGS" != "" ]]; then
           echo "RUSTFLAGS=$NEW_RUSTFLAGS" >> $GITHUB_ENV
         fi
         # Enable faster sparse index on nightly
