@@ -28,7 +28,7 @@ inputs:
     default: "true"
   rustflags:
     description: "set RUSTFLAGS environment variable, set to empty string to avoid overwriting build.rustflags"
-    requred: false
+    required: false
     default: "-D warnings"
 
 outputs:
