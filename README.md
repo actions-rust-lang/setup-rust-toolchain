@@ -57,10 +57,12 @@ Afterward, the `components` and `target` specified via inputs are installed in a
 ### RUSTFLAGS
 
 By default, this action sets the `RUSTFLAGS` environment variable to `-D warnings`.
+However, rustflags sources are mutually exclusive, so setting this environment variable omits any configuration through `target.*.rustflags` or `build.rustflags`.
 
-However, rustflags sources are mutually exclusive, so setting this environment
-variable omits any configuration through `target.*.rustflags` or
-`build.rustflags`.
+* If `RUSTFLAGS` is already set, no modifications of the variable are made and the original value remains.
+* If `RUSTFLAGS` is unset and the `rustflags` input is empty (i.e., the empty string), then it will remain unset.
+    Use this, if you want to prevent the value from being set because you make use of `target.*.rustflags` or `build.rustflags`.
+* Otherwise, the environment variable `RUSTFLAGS` is set to the content of `rustflags`.
 
 To prevent this from happening, set the `rustflags` input to an empty string, which will
 prevent the action from setting `RUSTFLAGS` at all, keeping any existing preferences.

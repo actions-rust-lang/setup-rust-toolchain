@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     Before only the items listed in `rust-toolchain` were installed.
     Now all the items from the toolchain file are installed and then all the `target`s and `components` that are provided as action inputs.
     This allows installing extra tools only for CI or simplify testing special targets in CI.
+* Allow skipping the creation of a `RUSTFLAGS` environment variable.
+    Cargos logic for rustflags is complicated, and setting the `RUSTFLAGS` environment variable prevents other ways of working.
+    Provide a new `rustflags` input, which controls the environment variable creation.
+    If the value is set to the empty string, then `RUSTFLAGS` is not created.
+
+    Pre-existing `RUSTFLAGS` variables are never modified by this extension.
 
 ## [1.4.4] - 2023-03-18
 
