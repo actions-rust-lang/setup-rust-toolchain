@@ -46,12 +46,28 @@ If a [toolchain file](https://rust-lang.github.io/rustup/overrides.html#the-tool
 First, all items specified in the toolchain file are installed.
 Afterward, the `components` and `target` specified via inputs are installed in addition to the items from the toolchain file.
 
-| Name         | Description                                                                       | Default |
-| ------------ | --------------------------------------------------------------------------------- | ------- |
-| `toolchain`  | Rustup toolchain specifier e.g. `stable`, `nightly`, `1.42.0`.                    | stable  |
-| `target`     | Additional target support to install e.g. `wasm32-unknown-unknown`                |         |
-| `components` | Comma-separated string of additional components to install e.g. `clippy, rustfmt` |         |
-| `cache`      | Automatically configure Rust cache (using `Swatinem/rust-cache`)                  | true    |
+| Name         | Description                                                                            | Default       |
+| ------------ | -------------------------------------------------------------------------------------- | ------------- |
+| `toolchain`  | Rustup toolchain specifier e.g. `stable`, `nightly`, `1.42.0`.                         | stable        |
+| `target`     | Additional target support to install e.g. `wasm32-unknown-unknown`                     |               |
+| `components` | Comma-separated string of additional components to install e.g. `clippy, rustfmt`      |               |
+| `cache`      | Automatically configure Rust cache (using `Swatinem/rust-cache`)                       | true          |
+| `rustflags`  | Set the value of `RUSTFLAGS` (set to empty string to avoid overwriting existing flags) | "-D warnings" |
+
+### RUSTFLAGS
+
+By default, this action sets the `RUSTFLAGS` environment variable to `-D warnings`.
+However, rustflags sources are mutually exclusive, so setting this environment variable omits any configuration through `target.*.rustflags` or `build.rustflags`.
+
+* If `RUSTFLAGS` is already set, no modifications of the variable are made and the original value remains.
+* If `RUSTFLAGS` is unset and the `rustflags` input is empty (i.e., the empty string), then it will remain unset.
+    Use this, if you want to prevent the value from being set because you make use of `target.*.rustflags` or `build.rustflags`.
+* Otherwise, the environment variable `RUSTFLAGS` is set to the content of `rustflags`.
+
+To prevent this from happening, set the `rustflags` input to an empty string, which will
+prevent the action from setting `RUSTFLAGS` at all, keeping any existing preferences.
+
+You can read more rustflags, and their load order, in the [Cargo reference].
 
 ## Outputs
 
@@ -68,3 +84,4 @@ License].
 
 [MIT License]: LICENSE
 [Problem Matchers]: https://github.com/actions/toolkit/blob/main/docs/problem-matchers.md
+[Cargo reference]: https://doc.rust-lang.org/cargo/reference/config.html?highlight=unknown#buildrustflags
