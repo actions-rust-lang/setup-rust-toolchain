@@ -108,10 +108,19 @@ runs:
           # Install the toolchain as specified in the file
           # Might break at some point: https://github.com/rust-lang/rustup/issues/1397
           rustup show
+          if [[ -n $components ]]; then
+            rustup component add ${components//,/ }
+          fi
+          if [[ -n $targets ]]; then
+            rustup target add ${targets//,/ }
+          fi
         else
           rustup toolchain install ${{inputs.toolchain}}${{steps.flags.outputs.targets}}${{steps.flags.outputs.components}} --profile minimal${{steps.flags.outputs.downgrade}} --no-self-update
           rustup default ${{inputs.toolchain}}
         fi
+      env:
+        targets: ${{inputs.target}}
+        components: ${{inputs.components}}
       shell: bash
 
     - name: Print installed versions

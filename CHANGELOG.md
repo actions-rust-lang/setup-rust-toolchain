@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.0] - 2023-05-29
+
+### Added
+
+* Support installing additional components and targets that are not listed in `rust-toolchain` (#14)
+    Before only the items listed in `rust-toolchain` were installed.
+    Now all the items from the toolchain file are installed and then all the `target`s and `components` that are provided as action inputs.
+    This allows installing extra tools only for CI or simplify testing special targets in CI.
+
 ## [1.4.4] - 2023-03-18
 
 ### Fixed

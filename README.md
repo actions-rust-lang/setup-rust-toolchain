@@ -42,8 +42,9 @@ jobs:
 ## Inputs
 
 All inputs are optional.
-If a [toolchain file](https://rust-lang.github.io/rustup/overrides.html#the-toolchain-file) (i.e., `rust-toolchain` or `rust-toolchain.toml`) is found in the root of the repository, it takes precedence.
-All input values are ignored if a toolchain file exists.
+If a [toolchain file](https://rust-lang.github.io/rustup/overrides.html#the-toolchain-file) (i.e., `rust-toolchain` or `rust-toolchain.toml`) is found in the root of the repository, its `toolchain` value takes precedence.
+First, all items specified in the toolchain file are installed.
+Afterward, the `components` and `target` specified via inputs are installed in addition to the items from the toolchain file.
 
 | Name         | Description                                                                       | Default |
 | ------------ | --------------------------------------------------------------------------------- | ------- |

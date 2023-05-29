@@ -48,6 +48,7 @@ jobs:
         id: toolchain
         with:
           toolchain: ${{matrix.rust}}
+          components: clippy
       - name: Check ${{'${{steps.toolchain.outputs.rustc-version}}'}}
         run: echo '${{steps.toolchain.outputs.rustc-version}}'
       - name: Check ${{'${{steps.toolchain.outputs.cargo-version}}'}}
@@ -62,4 +63,4 @@ jobs:
       # Add tiny empty crate.
       # This checks that registry access works.
       - run: cargo add serde_as
-      - run: cargo check
+      - run: cargo clippy
