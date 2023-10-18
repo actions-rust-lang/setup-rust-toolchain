@@ -71,11 +71,12 @@ You can read more rustflags, and their load order, in the [Cargo reference].
 
 ## Outputs
 
-| Name             | Description                               |
-| ---------------- | ----------------------------------------- |
-| `rustc-version`  | Version as reported by `rustc --version`  |
-| `cargo-version`  | Version as reported by `cargo --version`  |
-| `rustup-version` | Version as reported by `rustup --version` |
+| Name             | Description                                 |
+| ---------------- | ------------------------------------------- |
+| `rustc-version`  | Version as reported by `rustc --version`    |
+| `cargo-version`  | Version as reported by `cargo --version`    |
+| `rustup-version` | Version as reported by `rustup --version`   |
+| `cachekey`       | A short hash of the installed rustc version |
 
 ## License
 
