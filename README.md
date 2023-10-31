@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions-rust-lang/setup-rust-toolchain@v1
       - run: cargo test --all-features
- 
+
   # Check formatting with rustfmt
   formatting:
     name: cargo fmt
@@ -42,7 +42,9 @@ jobs:
 ## Inputs
 
 All inputs are optional.
-If a [toolchain file](https://rust-lang.github.io/rustup/overrides.html#the-toolchain-file) (i.e., `rust-toolchain` or `rust-toolchain.toml`) is found in the root of the repository, its `toolchain` value takes precedence.
+If a [toolchain file](https://rust-lang.github.io/rustup/overrides.html#the-toolchain-file) (i.e., `rust-toolchain` or `rust-toolchain.toml`) is found in the root of the repository and no `toolchain` value is provided, all items specified in the toolchain file will be installed.
+If a `toolchain` value is provided, the toolchain file will be ignored.
+If no `toolchain` value or toolchain file is present, it will default to `stable`.
 First, all items specified in the toolchain file are installed.
 Afterward, the `components` and `target` specified via inputs are installed in addition to the items from the toolchain file.
 
