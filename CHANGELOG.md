@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.0] - 2023-12-04
+
+### Added
+
+* Allow disabling problem matchers (#27)
+    This can be useful when having a matrix of jobs, that produce the same errors.
+
 ## [1.5.0] - 2023-05-29
 
 ### Added
