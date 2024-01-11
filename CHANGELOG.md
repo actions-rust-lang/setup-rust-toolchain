@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+* Allow overriding the toolchain file with explicit `toolchain` input. (#26)
+
 ## [1.6.0] - 2023-12-04
 
 ### Added

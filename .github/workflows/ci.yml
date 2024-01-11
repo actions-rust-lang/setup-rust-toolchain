@@ -1,7 +1,7 @@
 name: CI
 
 on:
-  push:
+  push: { branches: [main] }
   pull_request:
   schedule: [cron: "40 1 * * *"]
 
@@ -12,54 +12,61 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        rust: [
+        rust:
           # Test with toolchain file override
-          "",
+          - null
+
           # Test that the sparse registry check works.
           # 1.66 and 1.67 don't support stable sparse registry.
-          "1.66",
-          "nightly",
-          "beta",
-          "stable",
-        ]
-        os: [
-          "ubuntu-latest",
-          "windows-latest",
-          "macos-latest",
-        ]
+          - "1.66"
+
+          - "nightly"
+          - "beta"
+          - "stable"
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
     steps:
       - uses: actions/checkout@v4
+
       # Test toolchain file support
       - name: Write rust-toolchain.toml
+        if: matrix.rust == null
+        shell: bash
         run: |
           cat <<EOF >>rust-toolchain.toml
           [toolchain]
-          channel = "nightly-2022-09-10"
+          channel = "nightly-2024-01-11"
           components = [ "rustfmt", "rustc-dev" ]
           targets = [ "wasm32-unknown-unknown", "thumbv7m-none-eabi" ]
           profile = "minimal"
           EOF
-        shell: bash
-        if: matrix.rust == ''
 
-      - uses: ./
+      - id: toolchain
         name: Run actions-rust-lang/setup-rust-toolchain ${{matrix.rust || 'on toolchain file'}}
-        id: toolchain
+        uses: ./
         with:
           toolchain: ${{matrix.rust}}
           components: clippy
+
       - name: Check ${{'${{steps.toolchain.outputs.rustc-version}}'}}
         run: echo '${{steps.toolchain.outputs.rustc-version}}'
+
       - name: Check ${{'${{steps.toolchain.outputs.cargo-version}}'}}
         run: echo '${{steps.toolchain.outputs.cargo-version}}'
+
       - name: Check ${{'${{steps.toolchain.outputs.rustup-version}}'}}
         run: echo '${{steps.toolchain.outputs.rustup-version}}'
-      - run: rustc --version && cargo --version
-        shell: bash
+
+      - shell: bash
+        run: rustc --version && cargo --version
 
       # Test with creating a small project
       - run: cargo init . --bin --name ci
+
       # Add tiny empty crate.
       # This checks that registry access works.
       - run: cargo add serde_as
+
       - run: cargo clippy

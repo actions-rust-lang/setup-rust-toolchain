@@ -59,17 +59,21 @@ runs:
       shell: bash
 
     - id: flags
+      env:
+        targets: ${{inputs.target}}
+        components: ${{inputs.components}}
+      shell: bash
       run: |
         : construct rustup command line
         echo "targets=$(for t in ${targets//,/ }; do echo -n ' --target' $t; done)" >> $GITHUB_OUTPUT
         echo "components=$(for c in ${components//,/ }; do echo -n ' --component' $c; done)" >> $GITHUB_OUTPUT
         echo "downgrade=${{inputs.toolchain == 'nightly' && inputs.components && ' --allow-downgrade' || ''}}" >> $GITHUB_OUTPUT
-      env:
-        targets: ${{inputs.target}}
-        components: ${{inputs.components}}
-      shell: bash
+
     # The environment variables always need to be set before the caching action
-    - name: "Setting Environment Variables"
+    - name: Setting Environment Variables
+      env:
+        NEW_RUSTFLAGS: ${{inputs.rustflags}}
+      shell: bash
       run: |
         if [[ ! -v CARGO_INCREMENTAL ]]; then
           echo "CARGO_INCREMENTAL=0" >> $GITHUB_ENV
@@ -95,23 +99,27 @@ runs:
         if [[ ! -v CARGO_REGISTRIES_CRATES_IO_PROTOCOL ]]; then
           echo "CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse" >> $GITHUB_ENV
         fi
-      shell: bash
-      env:
-        NEW_RUSTFLAGS: ${{inputs.rustflags}}
-    - name: "Install Rust Problem Matcher"
+
+    - name: Install Rust Problem Matcher
       if: inputs.matcher == 'true'
-      run: echo "::add-matcher::${{ github.action_path }}/rust.json"
       shell: bash
+      run: echo "::add-matcher::${{ github.action_path }}/rust.json"
 
     - name: Install rustup, if needed
+      if: runner.os != 'Windows'
+      shell: bash
       run: |
         if ! command -v rustup &> /dev/null ; then
           curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused -fsSL "https://sh.rustup.rs" | sh -s -- --default-toolchain none -y
           echo "${CARGO_HOME:-$HOME/.cargo}/bin" >> $GITHUB_PATH
         fi
-      if: runner.os != 'Windows'
-      shell: bash
+
     - name: rustup toolchain install ${{inputs.toolchain || 'stable'}}
+      env:
+        toolchain: ${{inputs.toolchain}}
+        targets: ${{inputs.target}}
+        components: ${{inputs.components}}
+      shell: bash
       run: |
         if [[ -z "$toolchain" && ( -f "rust-toolchain" || -f "rust-toolchain.toml" ) ]]
         then
@@ -132,14 +140,10 @@ runs:
           rustup toolchain install $toolchain${{steps.flags.outputs.targets}}${{steps.flags.outputs.components}} --profile minimal${{steps.flags.outputs.downgrade}} --no-self-update
           rustup default $toolchain
         fi
-      env:
-        toolchain: ${{inputs.toolchain}}
-        targets: ${{inputs.target}}
-        components: ${{inputs.components}}
-      shell: bash
 
-    - name: Print installed versions
-      id: versions
+    - id: versions
+      name: Print installed versions
+      shell: bash
       run: |
         echo "rustc-version=$(rustc --version)" >> $GITHUB_OUTPUT
         rustc --version --verbose
@@ -151,9 +155,9 @@ runs:
         DATE=$(rustc --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')
         HASH=$(rustc --version --verbose | sed -ne 's/^commit-hash: //p')
         echo "cachekey=$(echo $DATE$HASH | head -c12)" >> $GITHUB_OUTPUT
-      shell: bash
 
-    - name: "Downgrade registry access protocol when needed"
+    - name: Downgrade registry access protocol when needed
+      shell: bash
       run: |
         # Not all versions support setting CARGO_REGISTRIES_CRATES_IO_PROTOCOL
         # On versions 1.66, 1.67, and 1.68.0-nightly the value "sparse" is still unstable.
@@ -163,8 +167,7 @@ runs:
           echo "Downgrade cargo registry protocol to git"
           echo "CARGO_REGISTRIES_CRATES_IO_PROTOCOL=git" >> $GITHUB_ENV
         fi
-      shell: bash
 
-    - name: "Setup Rust Caching"
+    - name: Setup Rust Caching
       if: inputs.cache == 'true'
       uses: Swatinem/rust-cache@v2
