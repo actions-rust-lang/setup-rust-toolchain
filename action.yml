@@ -25,6 +25,10 @@ inputs:
     description: "Automatically configure Rust cache"
     required: false
     default: "true"
+  matcher:
+    description: "Enable the Rust problem matcher"
+    required: false
+    default: "true"
   rustflags:
     description: "set RUSTFLAGS environment variable, set to empty string to avoid overwriting build.rustflags"
     required: false
@@ -95,6 +99,7 @@ runs:
       env:
         NEW_RUSTFLAGS: ${{inputs.rustflags}}
     - name: "Install Rust Problem Matcher"
+      if: inputs.matcher == 'true'
       run: echo "::add-matcher::${{ github.action_path }}/rust.json"
       shell: bash
 

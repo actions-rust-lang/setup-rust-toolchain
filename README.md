@@ -54,6 +54,7 @@ Afterward, the `components` and `target` specified via inputs are installed in a
 | `target`     | Additional target support to install e.g. `wasm32-unknown-unknown`                     |               |
 | `components` | Comma-separated string of additional components to install e.g. `clippy, rustfmt`      |               |
 | `cache`      | Automatically configure Rust cache (using `Swatinem/rust-cache`)                       | true          |
+| `matcher`    | Enable problem matcher to surface build messages and formatting issues                 | true          |
 | `rustflags`  | Set the value of `RUSTFLAGS` (set to empty string to avoid overwriting existing flags) | "-D warnings" |
 
 ### RUSTFLAGS
@@ -73,11 +74,12 @@ You can read more rustflags, and their load order, in the [Cargo reference].
 
 ## Outputs
 
-| Name             | Description                               |
-| ---------------- | ----------------------------------------- |
-| `rustc-version`  | Version as reported by `rustc --version`  |
-| `cargo-version`  | Version as reported by `cargo --version`  |
-| `rustup-version` | Version as reported by `rustup --version` |
+| Name             | Description                                 |
+| ---------------- | ------------------------------------------- |
+| `rustc-version`  | Version as reported by `rustc --version`    |
+| `cargo-version`  | Version as reported by `cargo --version`    |
+| `rustup-version` | Version as reported by `rustup --version`   |
+| `cachekey`       | A short hash of the installed rustc version |
 
 ## License
 
