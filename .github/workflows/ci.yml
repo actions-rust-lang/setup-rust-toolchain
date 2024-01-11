@@ -1,4 +1,3 @@
-
 name: CI
 
 on:
@@ -8,14 +7,14 @@ on:
 
 jobs:
   install:
-    name: Rust ${{matrix.rust}} ${{matrix.os}}
+    name: Rust ${{matrix.rust || '(toolchain file)'}} ${{matrix.os}}
     runs-on: ${{matrix.os}}
     strategy:
       fail-fast: false
       matrix:
         rust: [
           # Test with toolchain file override
-          "1.60",
+          "",
           # Test that the sparse registry check works.
           # 1.66 and 1.67 don't support stable sparse registry.
           "1.66",
@@ -41,10 +40,10 @@ jobs:
           profile = "minimal"
           EOF
         shell: bash
-        if: matrix.rust == '1.60'
+        if: matrix.rust == ''
 
       - uses: ./
-        name: Run actions-rust-lang/setup-rust-toolchain ${{matrix.rust}}
+        name: Run actions-rust-lang/setup-rust-toolchain ${{matrix.rust || 'on toolchain file'}}
         id: toolchain
         with:
           toolchain: ${{matrix.rust}}

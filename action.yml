@@ -15,7 +15,6 @@ inputs:
   toolchain:
     description: "Rust toolchain specification -- see https://rust-lang.github.io/rustup/concepts/toolchains.html#toolchain-specification"
     required: false
-    default: "stable"
   target:
     description: "Target triple to install for this toolchain"
     required: false
@@ -112,9 +111,9 @@ runs:
         fi
       if: runner.os != 'Windows'
       shell: bash
-    - name: rustup toolchain install ${{inputs.toolchain}}
+    - name: rustup toolchain install ${{inputs.toolchain || 'stable'}}
       run: |
-        if [[ -f "rust-toolchain" || -f "rust-toolchain.toml" ]]
+        if [[ -z "$toolchain" && ( -f "rust-toolchain" || -f "rust-toolchain.toml" ) ]]
         then
           # Install the toolchain as specified in the file
           # Might break at some point: https://github.com/rust-lang/rustup/issues/1397
@@ -126,10 +125,15 @@ runs:
             rustup target add ${targets//,/ }
           fi
         else
-          rustup toolchain install ${{inputs.toolchain}}${{steps.flags.outputs.targets}}${{steps.flags.outputs.components}} --profile minimal${{steps.flags.outputs.downgrade}} --no-self-update
-          rustup default ${{inputs.toolchain}}
+          if [[ -z "$toolchain" ]]
+          then
+            toolchain=stable
+          fi
+          rustup toolchain install $toolchain${{steps.flags.outputs.targets}}${{steps.flags.outputs.components}} --profile minimal${{steps.flags.outputs.downgrade}} --no-self-update
+          rustup default $toolchain
         fi
       env:
+        toolchain: ${{inputs.toolchain}}
         targets: ${{inputs.target}}
         components: ${{inputs.components}}
       shell: bash
