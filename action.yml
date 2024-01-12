@@ -138,7 +138,7 @@ runs:
             toolchain=stable
           fi
           rustup toolchain install $toolchain${{steps.flags.outputs.targets}}${{steps.flags.outputs.components}} --profile minimal${{steps.flags.outputs.downgrade}} --no-self-update
-          rustup default $toolchain
+          rustup override set $toolchain
         fi
 
     - id: versions
