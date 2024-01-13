@@ -70,3 +70,20 @@ jobs:
       - run: cargo add serde_as
 
       - run: cargo clippy
+
+  cache:
+    name: Cache
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: toolchain
+        name: Install Rust
+        uses: ./
+        with:
+          components: clippy
+          cache: true
+          cache-workspaces: |-
+            ./test-workspace
+
+      - run: cargo clippy
