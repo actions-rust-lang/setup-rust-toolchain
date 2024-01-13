@@ -7,7 +7,7 @@ on:
 
 jobs:
   install:
-    name: Rust ${{matrix.rust || '(toolchain file)'}} ${{matrix.os}}
+    name: Rust ${{matrix.rust || '(default)'}} (toolchain-file=${{matrix.write-toolchain-file}}) (${{matrix.os}})
     runs-on: ${{matrix.os}}
     strategy:
       fail-fast: false
