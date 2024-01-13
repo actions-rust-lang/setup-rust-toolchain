@@ -11,6 +11,7 @@ jobs:
     runs-on: ${{matrix.os}}
     strategy:
       fail-fast: false
+      max-parallel: 5
       matrix:
         os:
           - ubuntu-latest
@@ -94,8 +95,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - id: toolchain
-        name: Install Rust
+      - name: Install Rust
         uses: ./
         with:
           components: clippy

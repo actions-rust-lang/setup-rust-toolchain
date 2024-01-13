@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.0] - 2024-01-13
+
+* Allow specifying subdirectories for cache.
+* Fix toolchain file overriding.
+
 ## [1.7.0] - 2024-01-11
 
 * Allow overriding the toolchain file with explicit `toolchain` input. (#26)
