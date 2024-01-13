@@ -7,13 +7,20 @@ on:
 
 jobs:
   install:
-    name: Rust ${{matrix.rust || '(toolchain file)'}} ${{matrix.os}}
+    name: Rust ${{matrix.rust || '(default)'}} (toolchain-file=${{matrix.write-toolchain-file}}) (${{matrix.os}})
     runs-on: ${{matrix.os}}
     strategy:
       fail-fast: false
       matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+        write-toolchain-file:
+          - false
+          - true
         rust:
-          # Test with toolchain file override
+          # use stable toolchain as default
           - null
 
           # Test that the sparse registry check works.
@@ -23,21 +30,17 @@ jobs:
           - "nightly"
           - "beta"
           - "stable"
-        os:
-          - ubuntu-latest
-          - windows-latest
-          - macos-latest
     steps:
       - uses: actions/checkout@v4
 
       # Test toolchain file support
       - name: Write rust-toolchain.toml
-        if: matrix.rust == null
+        if: matrix.write-toolchain-file
         shell: bash
         run: |
           cat <<EOF >>rust-toolchain.toml
           [toolchain]
-          channel = "nightly-2024-01-11"
+          channel = "nightly-2024-01-10"
           components = [ "rustfmt", "rustc-dev" ]
           targets = [ "wasm32-unknown-unknown", "thumbv7m-none-eabi" ]
           profile = "minimal"
@@ -58,6 +61,20 @@ jobs:
 
       - name: Check ${{'${{steps.toolchain.outputs.rustup-version}}'}}
         run: echo '${{steps.toolchain.outputs.rustup-version}}'
+
+      - name: Check lack of toolchain input or file results in stable
+        if: matrix.write-toolchain-file == false && matrix.rust == null
+        shell: bash
+        run: |-
+          rustcv="$(rustc --version)"
+          [[ "$rustcv" != *"nightly"* && "$rustcv" != *"beta"* ]]
+
+      - name: Check toolchain file is being overridden
+        if: matrix.write-toolchain-file
+        shell: bash
+        run: |-
+          rustcv="$(rustc --version)"
+          [[ ! ( "$rustcv" == *"nightly"* && "$rustcv" == *"2024-01-10"* ) ]]
 
       - shell: bash
         run: rustc --version && cargo --version
