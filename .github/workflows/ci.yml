@@ -86,4 +86,4 @@ jobs:
           cache-workspaces: |-
             ./test-workspace
 
-      - run: cargo clippy
+      - run: cargo clippy --manifest-path=./test-workspace/Cargo.toml
