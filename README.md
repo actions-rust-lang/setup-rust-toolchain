@@ -55,6 +55,7 @@ Afterward, the `components` and `target` specified via inputs are installed in a
 | `components`       | Comma-separated string of additional components to install e.g. `clippy, rustfmt`      |               |
 | `cache`            | Automatically configure Rust cache (using `Swatinem/rust-cache`)                       | true          |
 | `cache-workspaces` | Propagates the value to `Swatinem/rust-cache`                                          |               |
+| `cache-on-failure` | Propagates the value to `Swatinem/rust-cache`                                          |               |
 | `matcher`          | Enable problem matcher to surface build messages and formatting issues                 | true          |
 | `rustflags`        | Set the value of `RUSTFLAGS` (set to empty string to avoid overwriting existing flags) | "-D warnings" |
 

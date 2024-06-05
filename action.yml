@@ -28,6 +28,10 @@ inputs:
   cache-workspaces:
     description: "Paths to multiple Cargo workspaces and their target directories, separated by newlines."
     required: false
+  cache-on-failure:
+    description: "Also cache on workflow failures"
+    default: "false"
+    required: false
   matcher:
     description: "Enable the Rust problem matcher"
     required: false
@@ -176,3 +180,4 @@ runs:
       uses: Swatinem/rust-cache@v2
       with:
         workspaces: ${{inputs.cache-workspaces}}
+        cache-on-failure: ${{inputs.cache-on-failure}}
