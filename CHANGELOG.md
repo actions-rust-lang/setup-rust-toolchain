@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.0] - 2024-06-08
+
+* Add extra argument `cache-on-failure` and forward it to `Swatinem/rust-cache`. (#39 by @samuelhnrq)  
+    Set the default the value to true.
+    This will result in more caching than previously.
+    This helps when large dependencies are compiled only for testing to fail.
+
 ## [1.8.0] - 2024-01-13
 
 * Allow specifying subdirectories for cache.

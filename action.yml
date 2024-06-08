@@ -30,7 +30,7 @@ inputs:
     required: false
   cache-on-failure:
     description: "Also cache on workflow failures"
-    default: "false"
+    default: "true"
     required: false
   matcher:
     description: "Enable the Rust problem matcher"
