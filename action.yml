@@ -32,6 +32,9 @@ inputs:
     description: "Also cache on workflow failures"
     default: "true"
     required: false
+  cache-key:
+    description: "An additional cache key that is added alongside the automatic `job`-based cache key and can be used to further differentiate jobs."
+    required: false
   matcher:
     description: "Enable the Rust problem matcher"
     required: false
@@ -181,3 +184,4 @@ runs:
       with:
         workspaces: ${{inputs.cache-workspaces}}
         cache-on-failure: ${{inputs.cache-on-failure}}
+        key: ${{inputs.cache-key}}
