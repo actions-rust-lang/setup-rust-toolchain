@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+* Add new parameter `cache-directories` that is propagated to `Swatinem/rust-cache` (#44 by @pranc1ngpegasus)
+* Add new parameter `cache-key` that is propagated to `Swatinem/rust-cache` as `key` (#41 by @iainlane)
+
 ## [1.9.0] - 2024-06-08
 
 * Add extra argument `cache-on-failure` and forward it to `Swatinem/rust-cache`. (#39 by @samuelhnrq)  
