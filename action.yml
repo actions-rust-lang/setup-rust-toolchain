@@ -137,8 +137,10 @@ runs:
         if [[ -z "$toolchain" && ( -f "rust-toolchain" || -f "rust-toolchain.toml" ) ]]
         then
           # Install the toolchain as specified in the file
-          # Might break at some point: https://github.com/rust-lang/rustup/issues/1397
-          rustup show
+          # rustup show is the old way that implicitly installed a toolchain
+          # rustup toolchain install is the new explicit way
+          # https://github.com/rust-lang/rustup/issues/3635#issuecomment-2343511297
+          rustup show active-toolchain || rustup toolchain install
           if [[ -n $components ]]; then
             rustup component add ${components//,/ }
           fi

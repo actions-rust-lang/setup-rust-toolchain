@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Add new parameter `cache-directories` that is propagated to `Swatinem/rust-cache` (#44 by @pranc1ngpegasus)
 * Add new parameter `cache-key` that is propagated to `Swatinem/rust-cache` as `key` (#41 by @iainlane)
+* Make rustup toolchain installation more robust in light of planned changes https://github.com/rust-lang/rustup/issues/3635 and https://github.com/rust-lang/rustup/pull/3985
 
 ## [1.9.0] - 2024-06-08
 
