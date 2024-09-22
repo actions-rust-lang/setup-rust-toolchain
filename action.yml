@@ -13,7 +13,7 @@ branding:
 # The action is heavily inspired by https://github.com/dtolnay/rust-toolchain
 inputs:
   toolchain:
-    description: "Rust toolchain specification -- see https://rust-lang.github.io/rustup/concepts/toolchains.html#toolchain-specification"
+    description: "Comma-separated list of Rust toolchain specifications. Last version becomes the default. -- see https://rust-lang.github.io/rustup/concepts/toolchains.html#toolchain-specification"
     required: false
   target:
     description: "Target triple to install for this toolchain"
@@ -80,7 +80,7 @@ runs:
         : construct rustup command line
         echo "targets=$(for t in ${targets//,/ }; do echo -n ' --target' $t; done)" >> $GITHUB_OUTPUT
         echo "components=$(for c in ${components//,/ }; do echo -n ' --component' $c; done)" >> $GITHUB_OUTPUT
-        echo "downgrade=${{inputs.toolchain == 'nightly' && inputs.components && ' --allow-downgrade' || ''}}" >> $GITHUB_OUTPUT
+        echo "downgrade=${{contains(inputs.toolchain, 'nightly') && inputs.components && ' --allow-downgrade' || ''}}" >> $GITHUB_OUTPUT
 
     # The environment variables always need to be set before the caching action
     - name: Setting Environment Variables
@@ -152,8 +152,9 @@ runs:
           then
             toolchain=stable
           fi
-          rustup toolchain install $toolchain${{steps.flags.outputs.targets}}${{steps.flags.outputs.components}} --profile minimal${{steps.flags.outputs.downgrade}} --no-self-update
-          rustup override set $toolchain
+          rustup toolchain install ${toolchain//,/ } ${{steps.flags.outputs.targets}}${{steps.flags.outputs.components}} --profile minimal${{steps.flags.outputs.downgrade}} --no-self-update
+          # Take the last element from the list
+          rustup override set ${toolchain//*,/ }
         fi
 
     - id: versions
