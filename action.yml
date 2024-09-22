@@ -46,6 +46,10 @@ inputs:
     description: "set RUSTFLAGS environment variable, set to empty string to avoid overwriting build.rustflags"
     required: false
     default: "-D warnings"
+  override:
+    description: "Setup the last installed toolchain as the default via `rustup override`"
+    required: false
+    default: "true"
 
 outputs:
   rustc-version:
@@ -132,6 +136,7 @@ runs:
         toolchain: ${{inputs.toolchain}}
         targets: ${{inputs.target}}
         components: ${{inputs.components}}
+        override: ${{inputs.override}}
       shell: bash
       run: |
         if [[ -z "$toolchain" && ( -f "rust-toolchain" || -f "rust-toolchain.toml" ) ]]
@@ -154,7 +159,10 @@ runs:
           fi
           rustup toolchain install ${toolchain//,/ } ${{steps.flags.outputs.targets}}${{steps.flags.outputs.components}} --profile minimal${{steps.flags.outputs.downgrade}} --no-self-update
           # Take the last element from the list
-          rustup override set ${toolchain//*,/ }
+          if [[ "$override" == "true" ]]
+          then
+            rustup override set ${toolchain//*,/ }
+          fi
         fi
 
     - id: versions

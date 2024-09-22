@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Add new parameter `cache-key` that is propagated to `Swatinem/rust-cache` as `key` (#41 by @iainlane)
 * Make rustup toolchain installation more robust in light of planned changes https://github.com/rust-lang/rustup/issues/3635 and https://github.com/rust-lang/rustup/pull/3985
 * Allow installing multiple Rust toolchains by specifying multiple versions in the `toolchain` input parameter.
+* Configure the `rustup override` behavior via the new `override` input. (#38)
 
 ## [1.9.0] - 2024-06-08
 
