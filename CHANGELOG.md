@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.10.1] - 2024-10-01
+
+* Fix problem matcher for rustfmt output.
+    The format has changed since https://github.com/rust-lang/rustfmt/pull/5971 and now follows the form "filename:line".
+    Thanks to @0xcypher02 for pointing out the problem.
+
+## [1.10.0] - 2024-09-23
+
 * Add new parameter `cache-directories` that is propagated to `Swatinem/rust-cache` (#44 by @pranc1ngpegasus)
 * Add new parameter `cache-key` that is propagated to `Swatinem/rust-cache` as `key` (#41 by @iainlane)
 * Make rustup toolchain installation more robust in light of planned changes https://github.com/rust-lang/rustup/issues/3635 and https://github.com/rust-lang/rustup/pull/3985

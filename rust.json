@@ -5,7 +5,7 @@
             "severity": "warning",
             "pattern": [
                 {
-                    "regexp": "^(Diff in (.+)) at line (\\d+):$",
+                    "regexp": "^(Diff in (.+))(?: at line |:)(\\d+):$",
                     "message": 1,
                     "file": 2,
                     "line": 3
