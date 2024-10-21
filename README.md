@@ -88,6 +88,16 @@ You can read more rustflags, and their load order, in the [Cargo reference].
 | `rustup-version` | Version as reported by `rustup --version`   |
 | `cachekey`       | A short hash of the installed rustc version |
 
+## Dependencies
+
+The action works best on the GitHub-hosted runners, but can work on self-hosted ones too, provided the necessary dependencies are available.
+PRs to add support for more environments are welcome.
+
+* bash 5
+* brew (macOS only)
+* rustup or curl (Linux and macOS)
+* using other node actions
+
 ## License
 
 The scripts and documentation in this project are released under the [MIT
