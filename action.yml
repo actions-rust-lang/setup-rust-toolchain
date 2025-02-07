@@ -38,6 +38,9 @@ inputs:
   cache-key:
     description: "An additional cache key that is added alongside the automatic `job`-based cache key and can be used to further differentiate jobs."
     required: false
+  shared-cache-key:
+    description: "A cache key that is used instead of the automatic `job`-based key, and is stable over multiple jobs."
+    required: false
   matcher:
     description: "Enable the Rust problem matcher"
     required: false
@@ -200,3 +203,4 @@ runs:
         cache-directories: ${{inputs.cache-directories}}
         cache-on-failure: ${{inputs.cache-on-failure}}
         key: ${{inputs.cache-key}}
+        shared-key: ${{inputs.shared-cache-key}}
