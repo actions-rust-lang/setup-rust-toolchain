@@ -41,6 +41,10 @@ inputs:
   cache-shared-key:
     description: "A cache key that is used instead of the automatic `job`-based key, and is stable over multiple jobs."
     required: false
+  cache-bin:
+    description: "Determines whether to cache ${CARGO_HOME}/bin."
+    required: false
+    default: "true"
   matcher:
     description: "Enable the Rust problem matcher"
     required: false
@@ -202,5 +206,6 @@ runs:
         workspaces: ${{inputs.cache-workspaces}}
         cache-directories: ${{inputs.cache-directories}}
         cache-on-failure: ${{inputs.cache-on-failure}}
+        cache-bin: ${{inputs.cache-bin}}
         key: ${{inputs.cache-key}}
         shared-key: ${{inputs.cache-shared-key}}

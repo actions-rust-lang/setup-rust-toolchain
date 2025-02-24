@@ -59,6 +59,7 @@ Afterward, the `components` and `target` specified via inputs are installed in a
 | `cache-on-failure`  | Propagates the value to [`Swatinem/rust-cache`]                                                                          | true          |
 | `cache-key`         | Propagates the value to [`Swatinem/rust-cache`] as `key`                                                                 |               |
 | `cache-shared-key`  | Propagates the value to [`Swatinem/rust-cache`] as `shared-key`                                                          |               |
+| `cache-bin`         | Propagates the value to [`Swatinem/rust-cache`] as `cache-bin`                                                           | true          |
 | `matcher`           | Enable problem matcher to surface build messages and formatting issues                                                   | true          |
 | `rustflags`         | Set the value of `RUSTFLAGS` (set to empty string to avoid overwriting existing flags)                                   | "-D warnings" |
 | `override`          | Setup the last installed toolchain as the default via `rustup override`                                                  | true          |
