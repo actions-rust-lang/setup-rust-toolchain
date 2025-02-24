@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.0] - 2025-02-24
+
+* Add new parameter `cache-bin` that is propagated to `Swatinem/rust-cache` as `cache-bin` (#51 by @enkhjile)
+* Add new parameter `cache-shared-key` that is propagated to `Swatinem/rust-cache` as `shared-key` (#52 by @skanehira)
+
 ## [1.10.1] - 2024-10-01
 
 * Fix problem matcher for rustfmt output.
