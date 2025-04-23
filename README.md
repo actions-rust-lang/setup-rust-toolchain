@@ -97,7 +97,7 @@ PRs to add support for more environments are welcome.
 
 * bash 5
 * brew (macOS only)
-* rustup or curl (Linux and macOS)
+* rustup or curl
 * using other node actions
 
 ## License
