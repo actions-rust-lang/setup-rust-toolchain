@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.12.0] - 2025-04-23
+
+* Add support for installing rustup on Windows (#58 by @maennchen)
+    This adds support for using Rust on the GitHub provided Windows ARM runners.
+
 ## [1.11.0] - 2025-02-24
 
 * Add new parameter `cache-bin` that is propagated to `Swatinem/rust-cache` as `cache-bin` (#51 by @enkhjile)
