@@ -53,6 +53,7 @@ Afterward, the `components` and `target` specified via inputs are installed in a
 | `toolchain`         | Comma-separated list of Rustup toolchain specifier e.g. `stable`, `nightly`, `1.42.0`.  The last version is the default. | stable        |
 | `target`            | Additional target support to install e.g. `wasm32-unknown-unknown`                                                       |               |
 | `components`        | Comma-separated string of additional components to install e.g. `clippy, rustfmt`                                        |               |
+| `cargo-packages`    | Comma-separated string of Cargo packages to install e.g. `cargo-edit, cargo-tarpaulin`                                   |               |
 | `cache`             | Automatically configure Rust cache (using [`Swatinem/rust-cache`])                                                       | true          |
 | `cache-directories` | Propagates the value to [`Swatinem/rust-cache`]                                                                          |               |
 | `cache-workspaces`  | Propagates the value to [`Swatinem/rust-cache`]                                                                          |               |

@@ -21,6 +21,9 @@ inputs:
   components:
     description: "Comma-separated list of components to be additionally installed"
     required: false
+  cargo-packages:
+    description: "Comma-separated list of Cargo packages to be additionally installed"
+    required: false
   cache:
     description: "Automatically configure Rust cache"
     required: false
@@ -134,7 +137,7 @@ runs:
       run: |
         if ! command -v rustup &> /dev/null ; then
           curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused -fsSL "https://sh.rustup.rs" | sh -s -- --default-toolchain none -y
-          
+
           # Resolve the correct CARGO_HOME path depending on OS
           if [[ "$RUNNER_OS" == "Windows" ]]; then
             echo "${CARGO_HOME:-$USERPROFILE/.cargo}/bin" | sed 's|/|\\|g' >> $GITHUB_PATH
@@ -178,6 +181,13 @@ runs:
             rustup override set ${toolchain//*,/ }
           fi
         fi
+
+    - name: Install additional Cargo packages
+      if: inputs.cargo-packages != ''
+      env:
+        packages: ${{inputs.cargo-packages}}
+      shell: bash
+      run: cargo install ${packages//,/ }
 
     - id: versions
       name: Print installed versions
