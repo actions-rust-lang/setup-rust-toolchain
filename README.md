@@ -6,7 +6,7 @@ Caching for Rust tools and build artifacts is enabled.
 Environment variables are set to optimize the cache hits.
 [Problem Matchers] are provided for build messages (cargo, clippy) and formatting (rustfmt).
 
-The action is heavily inspired by *dtolnay*'s <https://github.com/dtolnay/rust-toolchain> and extends it with further features.
+The action is heavily inspired by _dtolnay_'s <https://github.com/dtolnay/rust-toolchain> and extends it with further features.
 
 ## Example workflow
 
@@ -48,21 +48,22 @@ If no `toolchain` value or toolchain file is present, it will default to `stable
 First, all items specified in the toolchain file are installed.
 Afterward, the `components` and `target` specified via inputs are installed in addition to the items from the toolchain file.
 
-| Name                | Description                                                                                                              | Default       |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------ | ------------- |
-| `toolchain`         | Comma-separated list of Rustup toolchain specifier e.g. `stable`, `nightly`, `1.42.0`.  The last version is the default. | stable        |
-| `target`            | Additional target support to install e.g. `wasm32-unknown-unknown`                                                       |               |
-| `components`        | Comma-separated string of additional components to install e.g. `clippy, rustfmt`                                        |               |
-| `cache`             | Automatically configure Rust cache (using [`Swatinem/rust-cache`])                                                       | true          |
-| `cache-directories` | Propagates the value to [`Swatinem/rust-cache`]                                                                          |               |
-| `cache-workspaces`  | Propagates the value to [`Swatinem/rust-cache`]                                                                          |               |
-| `cache-on-failure`  | Propagates the value to [`Swatinem/rust-cache`]                                                                          | true          |
-| `cache-key`         | Propagates the value to [`Swatinem/rust-cache`] as `key`                                                                 |               |
-| `cache-shared-key`  | Propagates the value to [`Swatinem/rust-cache`] as `shared-key`                                                          |               |
-| `cache-bin`         | Propagates the value to [`Swatinem/rust-cache`] as `cache-bin`                                                           | true          |
-| `matcher`           | Enable problem matcher to surface build messages and formatting issues                                                   | true          |
-| `rustflags`         | Set the value of `RUSTFLAGS` (set to empty string to avoid overwriting existing flags)                                   | "-D warnings" |
-| `override`          | Setup the last installed toolchain as the default via `rustup override`                                                  | true          |
+| Name                | Description                                                                                                             | Default       |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `toolchain`         | Comma-separated list of Rustup toolchain specifier e.g. `stable`, `nightly`, `1.42.0`. The last version is the default. | stable        |
+| `target`            | Additional target support to install e.g. `wasm32-unknown-unknown`                                                      |               |
+| `components`        | Comma-separated string of additional components to install e.g. `clippy, rustfmt`                                       |               |
+| `cache`             | Automatically configure Rust cache (using [`Swatinem/rust-cache`])                                                      | true          |
+| `cache-directories` | Propagates the value to [`Swatinem/rust-cache`]                                                                         |               |
+| `cache-workspaces`  | Propagates the value to [`Swatinem/rust-cache`]                                                                         |               |
+| `cache-on-failure`  | Propagates the value to [`Swatinem/rust-cache`]                                                                         | true          |
+| `cache-key`         | Propagates the value to [`Swatinem/rust-cache`] as `key`                                                                |               |
+| `cache-shared-key`  | Propagates the value to [`Swatinem/rust-cache`] as `shared-key`                                                         |               |
+| `cache-bin`         | Propagates the value to [`Swatinem/rust-cache`] as `cache-bin`                                                          | true          |
+| `cache-provider`    | Propagates the value to [`Swatinem/rust-cache`] as `cache-provider`                                                     | 'github'      |
+| `matcher`           | Enable problem matcher to surface build messages and formatting issues                                                  | true          |
+| `rustflags`         | Set the value of `RUSTFLAGS` (set to empty string to avoid overwriting existing flags)                                  | "-D warnings" |
+| `override`          | Setup the last installed toolchain as the default via `rustup override`                                                 | true          |
 
 [`Swatinem/rust-cache`]: https://github.com/Swatinem/rust-cache
 
@@ -71,10 +72,10 @@ Afterward, the `components` and `target` specified via inputs are installed in a
 By default, this action sets the `RUSTFLAGS` environment variable to `-D warnings`.
 However, rustflags sources are mutually exclusive, so setting this environment variable omits any configuration through `target.*.rustflags` or `build.rustflags`.
 
-* If `RUSTFLAGS` is already set, no modifications of the variable are made and the original value remains.
-* If `RUSTFLAGS` is unset and the `rustflags` input is empty (i.e., the empty string), then it will remain unset.
-    Use this, if you want to prevent the value from being set because you make use of `target.*.rustflags` or `build.rustflags`.
-* Otherwise, the environment variable `RUSTFLAGS` is set to the content of `rustflags`.
+- If `RUSTFLAGS` is already set, no modifications of the variable are made and the original value remains.
+- If `RUSTFLAGS` is unset and the `rustflags` input is empty (i.e., the empty string), then it will remain unset.
+  Use this, if you want to prevent the value from being set because you make use of `target.*.rustflags` or `build.rustflags`.
+- Otherwise, the environment variable `RUSTFLAGS` is set to the content of `rustflags`.
 
 To prevent this from happening, set the `rustflags` input to an empty string, which will
 prevent the action from setting `RUSTFLAGS` at all, keeping any existing preferences.
@@ -95,10 +96,10 @@ You can read more rustflags, and their load order, in the [Cargo reference].
 The action works best on the GitHub-hosted runners, but can work on self-hosted ones too, provided the necessary dependencies are available.
 PRs to add support for more environments are welcome.
 
-* bash 5
-* brew (macOS only)
-* rustup or curl
-* using other node actions
+- bash 5
+- brew (macOS only)
+- rustup or curl
+- using other node actions
 
 ## License
 
