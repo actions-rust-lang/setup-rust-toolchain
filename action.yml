@@ -45,6 +45,10 @@ inputs:
     description: "Determines whether to cache ${CARGO_HOME}/bin."
     required: false
     default: "true"
+  cache-provider:
+    description: "Determines which provider to use for caching. Options are github or buildjet, defaults to github."
+    required: false
+    default: "github"
   matcher:
     description: "Enable the Rust problem matcher"
     required: false
@@ -214,5 +218,6 @@ runs:
         cache-directories: ${{inputs.cache-directories}}
         cache-on-failure: ${{inputs.cache-on-failure}}
         cache-bin: ${{inputs.cache-bin}}
+        cache-provider: ${{inputs.cache-provider}}
         key: ${{inputs.cache-key}}
         shared-key: ${{inputs.cache-shared-key}}
