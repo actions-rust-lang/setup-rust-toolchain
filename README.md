@@ -48,22 +48,24 @@ If no `toolchain` value or toolchain file is present, it will default to `stable
 First, all items specified in the toolchain file are installed.
 Afterward, the `components` and `target` specified via inputs are installed in addition to the items from the toolchain file.
 
-| Name                | Description                                                                                                             | Default       |
-| ------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------- |
-| `toolchain`         | Comma-separated list of Rustup toolchain specifier e.g. `stable`, `nightly`, `1.42.0`. The last version is the default. | stable        |
-| `target`            | Additional target support to install e.g. `wasm32-unknown-unknown`                                                      |               |
-| `components`        | Comma-separated string of additional components to install e.g. `clippy, rustfmt`                                       |               |
-| `cache`             | Automatically configure Rust cache (using [`Swatinem/rust-cache`])                                                      | true          |
-| `cache-directories` | Propagates the value to [`Swatinem/rust-cache`]                                                                         |               |
-| `cache-workspaces`  | Propagates the value to [`Swatinem/rust-cache`]                                                                         |               |
-| `cache-on-failure`  | Propagates the value to [`Swatinem/rust-cache`]                                                                         | true          |
-| `cache-key`         | Propagates the value to [`Swatinem/rust-cache`] as `key`                                                                |               |
-| `cache-shared-key`  | Propagates the value to [`Swatinem/rust-cache`] as `shared-key`                                                         |               |
-| `cache-bin`         | Propagates the value to [`Swatinem/rust-cache`] as `cache-bin`                                                          | true          |
-| `cache-provider`    | Propagates the value to [`Swatinem/rust-cache`] as `cache-provider`                                                     | 'github'      |
-| `matcher`           | Enable problem matcher to surface build messages and formatting issues                                                  | true          |
-| `rustflags`         | Set the value of `RUSTFLAGS` (set to empty string to avoid overwriting existing flags)                                  | "-D warnings" |
-| `override`          | Setup the last installed toolchain as the default via `rustup override`                                                 | true          |
+| Name                     | Description                                                                                                             | Default       |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `toolchain`              | Comma-separated list of Rustup toolchain specifier e.g. `stable`, `nightly`, `1.42.0`. The last version is the default. | stable        |
+| `target`                 | Additional target support to install e.g. `wasm32-unknown-unknown`                                                      |               |
+| `components`             | Comma-separated string of additional components to install e.g. `clippy, rustfmt`                                       |               |
+| `cache`                  | Automatically configure Rust cache (using [`Swatinem/rust-cache`])                                                      | true          |
+| `cache-directories`      | Propagates the value to [`Swatinem/rust-cache`]                                                                         |               |
+| `cache-workspaces`       | Propagates the value to [`Swatinem/rust-cache`]                                                                         |               |
+| `cache-on-failure`       | Propagates the value to [`Swatinem/rust-cache`]                                                                         | true          |
+| `cache-key`              | Propagates the value to [`Swatinem/rust-cache`] as `key`                                                                |               |
+| `cache-shared-key`       | Propagates the value to [`Swatinem/rust-cache`] as `shared-key`                                                         |               |
+| `cache-bin`              | Propagates the value to [`Swatinem/rust-cache`] as `cache-bin`                                                          | true          |
+| `cache-provider`         | Propagates the value to [`Swatinem/rust-cache`] as `cache-provider`                                                     | 'github'      |
+| `cache-all-crates`       | Propagates the value to [`Swatinem/rust-cache`] as `cache-all-crates`                                                   | false         |
+| `cache-workspace-crates` | Propagates the value to [`Swatinem/rust-cache`] as `cache-workspace-crates`                                             | false         |
+| `matcher`                | Enable problem matcher to surface build messages and formatting issues                                                  | true          |
+| `rustflags`              | Set the value of `RUSTFLAGS` (set to empty string to avoid overwriting existing flags)                                  | "-D warnings" |
+| `override`               | Setup the last installed toolchain as the default via `rustup override`                                                 | true          |
 
 [`Swatinem/rust-cache`]: https://github.com/Swatinem/rust-cache
 
