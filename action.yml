@@ -32,7 +32,7 @@ inputs:
     description: "Additional non workspace directories to be cached, separated by newlines."
     required: false
   cache-on-failure:
-    description: "Also cache on workflow failures"
+    description: "Cache even if the build fails."
     default: "true"
     required: false
   cache-key:
@@ -46,9 +46,17 @@ inputs:
     required: false
     default: "true"
   cache-provider:
-    description: "Determines which provider to use for caching. Options are github or buildjet, defaults to github."
+    description: "Determines which provider to use for caching. Options are github, buildjet, or warpbuild. Defaults to github."
     required: false
     default: "github"
+  cache-all-crates:
+    description: "Determines which crates are cached. If `true` all crates will be cached, otherwise only dependent crates will be cached."
+    required: false
+    default: "false"
+  cache-workspace-crates:
+    description: "Determines which crates are cached. If `true` all crates will be cached, otherwise only dependent crates will be cached."
+    required: false
+    default: "false"
   matcher:
     description: "Enable the Rust problem matcher"
     required: false
@@ -138,7 +146,7 @@ runs:
       run: |
         if ! command -v rustup &> /dev/null ; then
           curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused -fsSL "https://sh.rustup.rs" | sh -s -- --default-toolchain none -y
-          
+
           # Resolve the correct CARGO_HOME path depending on OS
           if [[ "$RUNNER_OS" == "Windows" ]]; then
             echo "${CARGO_HOME:-$USERPROFILE/.cargo}/bin" | sed 's|/|\\|g' >> $GITHUB_PATH
@@ -219,5 +227,7 @@ runs:
         cache-on-failure: ${{inputs.cache-on-failure}}
         cache-bin: ${{inputs.cache-bin}}
         cache-provider: ${{inputs.cache-provider}}
+        cache-all-crates: ${{inputs.cache-all-crates}}
+        cache-workspace-crates: ${{inputs.cache-workspace-crates}}
         key: ${{inputs.cache-key}}
         shared-key: ${{inputs.cache-shared-key}}
