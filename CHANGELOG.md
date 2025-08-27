@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.14.1] - 2025-08-28
+
+* Pin `Swatinem/rust-cache` action to a full commit SHA (#68 by @JohnTitor)
+
 ## [1.14.0] - 2025-08-23
 
 * Add new parameters `cache-all-crates` and `cache-workspace-crates` that are propagated to `Swatinem/rust-cache` as `cache-all-crates` and `cache-workspace-crates`
