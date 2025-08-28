@@ -32,7 +32,7 @@ jobs:
           - "beta"
           - "stable"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # Test toolchain file support
       - name: Write rust-toolchain.toml
@@ -93,7 +93,7 @@ jobs:
     name: Cache
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install Rust
         uses: ./
