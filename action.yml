@@ -69,8 +69,8 @@ inputs:
     description: "Setup the last installed toolchain as the default via `rustup override`"
     required: false
     default: "true"
-  rust-toolchain-dir:
-    description: "Specify path from root directory to the directory to search for rust-toolchain.toml file. By default root directory will be used."
+  rust-src-dir:
+    description: "Specify path from root directory to the Rust source directory. By default root directory will be used."
     required: false
 
 outputs:
@@ -166,18 +166,18 @@ runs:
         targets: ${{inputs.target}}
         components: ${{inputs.components}}
         override: ${{inputs.override}}
-        rust_toolchain_dir: ${{inputs.rust-toolchain-dir}}
+        rust_src_dir: ${{inputs.rust-src-dir}}
       shell: bash
       run: |
-        if [[ -z "$toolchain" && ( -f "rust-toolchain" || -f "rust-toolchain.toml" || -f "$rust_toolchain_dir/rust-toolchain.toml") ]]
+        if [[ -d "$rust_src_dir" ]]; then
+          cd "$rust_src_dir"
+        fi
+        if [[ -z "$toolchain" && ( -f "rust-toolchain" || -f "rust-toolchain.toml") ]]
         then
           # Install the toolchain as specified in the file
           # rustup show is the old way that implicitly installed a toolchain
           # rustup toolchain install is the new explicit way
           # https://github.com/rust-lang/rustup/issues/3635#issuecomment-2343511297
-          if [[ -n "$rust_toolchain_dir" ]]; then
-              cd "$rust_toolchain_dir"
-          fi
           rustup show active-toolchain || rustup toolchain install
           if [[ -n $components ]]; then
             rustup component add ${components//,/ }
