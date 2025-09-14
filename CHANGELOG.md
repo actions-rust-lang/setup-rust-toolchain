@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.15.0] - 2025-09-14
+
+* Add support for non-root source directory.
+    Accept source code and `rust-toolchain.toml` file in subdirectories of the repository.
+    Adds a new parameter `rust-src-dir` that controls the lookup for toolchain files and sets a default value for the `cache-workspace` input. (#69 by @Kubaryt)
+
 ## [1.14.1] - 2025-08-28
 
 * Pin `Swatinem/rust-cache` action to a full commit SHA (#68 by @JohnTitor)
