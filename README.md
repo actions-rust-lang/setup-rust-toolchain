@@ -66,6 +66,7 @@ Afterward, the `components` and `target` specified via inputs are installed in a
 | `matcher`                | Enable problem matcher to surface build messages and formatting issues                                                  | true          |
 | `rustflags`              | Set the value of `RUSTFLAGS` (set to empty string to avoid overwriting existing flags)                                  | "-D warnings" |
 | `override`               | Setup the last installed toolchain as the default via `rustup override`                                                 | true          |
+| `rust-src-dir`           | Path from root directory to directory with the Rust source directory (if its not in the root of the repository)         |               |
 
 [`Swatinem/rust-cache`]: https://github.com/Swatinem/rust-cache
 

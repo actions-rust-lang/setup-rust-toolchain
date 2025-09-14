@@ -69,6 +69,9 @@ inputs:
     description: "Setup the last installed toolchain as the default via `rustup override`"
     required: false
     default: "true"
+  rust-src-dir:
+    description: "Specify path from root directory to the Rust source directory. By default root directory will be used."
+    required: false
 
 outputs:
   rustc-version:
@@ -163,9 +166,13 @@ runs:
         targets: ${{inputs.target}}
         components: ${{inputs.components}}
         override: ${{inputs.override}}
+        rust_src_dir: ${{inputs.rust-src-dir}}
       shell: bash
       run: |
-        if [[ -z "$toolchain" && ( -f "rust-toolchain" || -f "rust-toolchain.toml" ) ]]
+        if [[ -d "$rust_src_dir" ]]; then
+          cd "$rust_src_dir"
+        fi
+        if [[ -z "$toolchain" && ( -f "rust-toolchain" || -f "rust-toolchain.toml") ]]
         then
           # Install the toolchain as specified in the file
           # rustup show is the old way that implicitly installed a toolchain
@@ -222,7 +229,7 @@ runs:
       if: inputs.cache == 'true'
       uses: Swatinem/rust-cache@98c8021b550208e191a6a3145459bfc9fb29c4c0 # v2.8.0
       with:
-        workspaces: ${{inputs.cache-workspaces}}
+        workspaces: ${{ inputs.cache-workspaces || inputs.rust-src-dir }}
         cache-directories: ${{inputs.cache-directories}}
         cache-on-failure: ${{inputs.cache-on-failure}}
         cache-bin: ${{inputs.cache-bin}}
