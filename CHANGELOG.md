@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.15.1] - 2025-09-23
+
+* Update `Swatinem/rust-cache` to v2.8.1
+
 ## [1.15.0] - 2025-09-14
 
 * Add support for non-root source directory.
