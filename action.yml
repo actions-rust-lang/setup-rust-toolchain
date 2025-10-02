@@ -179,6 +179,10 @@ runs:
           # rustup toolchain install is the new explicit way
           # https://github.com/rust-lang/rustup/issues/3635#issuecomment-2343511297
           rustup show active-toolchain || rustup toolchain install
+          if ! rustup default &>/dev/null; then
+            TOOLCHAIN=$(rustup show active-toolchain 2>/dev/null | awk '{print $1}' | sed 's/-.*//')
+            [[ -n "$TOOLCHAIN" ]] && rustup default "$TOOLCHAIN" || rustup default stable
+          fi
           if [[ -n $components ]]; then
             rustup component add ${components//,/ }
           fi
