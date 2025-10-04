@@ -212,7 +212,7 @@ runs:
       name: Print installed versions
       shell: bash
       # Switch to the Rust sub-directory
-      working-directory: ${{inputs.rust-src-dir || "."}}
+      working-directory: ${{inputs.rust-src-dir || '.'}}
       run: |
         echo "rustc-version=$(rustc --version)" >> $GITHUB_OUTPUT
         rustc --version --verbose
