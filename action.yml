@@ -169,12 +169,18 @@ runs:
         rust_src_dir: ${{inputs.rust-src-dir}}
       shell: bash
       run: |
-        if [[ -d "$rust_src_dir" ]]; then
-          cd "$rust_src_dir"
-        else
-          echo "'rust-src-dir' does not point to an existing directory" >&2
-          echo "The value of 'rust-src-dir' is: ${rust_src_dir}" >&2
-          exit 1
+        # Check if value is set
+        if [[ -n "$rust_src_dir" ]]
+        then
+          # If value is set the directory must exist
+          if [[ -d "$rust_src_dir" ]]
+          then
+            cd "$rust_src_dir"
+          else
+            echo "'rust-src-dir' does not point to an existing directory" >&2
+            echo "The value of 'rust-src-dir' is: ${rust_src_dir}" >&2
+            exit 1
+          fi
         fi
         if [[ -z "$toolchain" && ( -f "rust-toolchain" || -f "rust-toolchain.toml") ]]
         then
