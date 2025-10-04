@@ -211,12 +211,9 @@ runs:
     - id: versions
       name: Print installed versions
       shell: bash
-      env:
-        rust_src_dir: ${{inputs.rust-src-dir}}
+      # Switch to the Rust sub-directory
+      working-directory: ${{inputs.rust-src-dir || "."}}
       run: |
-        # Switch to the selected sub-directory for
-        cd "$rust_src_dir"
-
         echo "rustc-version=$(rustc --version)" >> $GITHUB_OUTPUT
         rustc --version --verbose
         echo "cargo-version=$(cargo --version)" >> $GITHUB_OUTPUT
