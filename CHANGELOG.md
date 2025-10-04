@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.15.2] - 2025-10-04
+
+* Fix: Run the version detection steps in the selected `rust-src-dir` directory.
+    This should enable the version selection even without a default toolchain installed.
+    Fixes #74.
+
 ## [1.15.1] - 2025-09-23
 
 * Update `Swatinem/rust-cache` to v2.8.1
