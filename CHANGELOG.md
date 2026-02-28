@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.15.3] - 2026-03-01
+
+* Bump Swatinem/rust-cache from 2.8.1 to 2.8.2
+
 ## [1.15.2] - 2025-10-04
 
 * Fix: Run the version detection steps in the selected `rust-src-dir` directory.
