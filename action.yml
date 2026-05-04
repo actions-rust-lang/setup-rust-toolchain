@@ -182,18 +182,12 @@ runs:
         echo ::endgroup::
 
         echo ::group::Check evaluations
-        [[ -z "$toolchain" ]]
-        echo $?
-        [[ ( -f "rust-toolchain" || -f "rust-toolchain.toml") ]]
-        echo $?
-        [[ ( -f "rust-toolchain") ]]
-        echo $?
-        [[ ( -f "rust-toolchain.toml") ]]
-        echo $?
-        [[ -z "$toolchain" && ( -f "rust-toolchain" || -f "rust-toolchain.toml" ) ]]
-        echo $?
-        [[ -z "$toolchain" && ( -f "rust-toolchain" || -f "rust-toolchain.toml" ) ]]
-        echo $?
+        echo $( [[ -z "$toolchain" ]] ) $?
+        echo $( [[ ( -f "rust-toolchain" || -f "rust-toolchain.toml") ]] ) $?
+        echo $( [[ ( -f "rust-toolchain") ]] ) $?
+        echo $( [[ ( -f "rust-toolchain.toml") ]] ) $?
+        echo $( [[ -z "$toolchain" && ( -f "rust-toolchain" || -f "rust-toolchain.toml" ) ]] ) $?
+        echo $( [[ -z "$toolchain" && ( -f "rust-toolchain" || -f "rust-toolchain.toml" ) ]] ) $?
         echo ::endgroup::
 
         # Check if value is set
