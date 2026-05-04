@@ -210,11 +210,12 @@ runs:
           # rustup toolchain install is the new explicit way
           # https://github.com/rust-lang/rustup/issues/3635#issuecomment-2343511297
           rustup show active-toolchain || rustup toolchain install
+          active_toolchain=$(rustup show active-toolchain | cut -d ' ' -f 1)
           if [[ -n $components ]]; then
-            rustup component add ${components//,/ }
+            rustup component add --toolchain "$active_toolchain" ${components//,/ }
           fi
           if [[ -n $targets ]]; then
-            rustup target add ${targets//,/ }
+            rustup target add --toolchain "$active_toolchain" ${targets//,/ }
           fi
         else
           if [[ -z "$toolchain" ]]
