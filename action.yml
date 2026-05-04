@@ -173,6 +173,29 @@ runs:
         rust_src_dir: ${{inputs.rust-src-dir}}
       shell: bash
       run: |
+        echo ::group::Environment
+        env
+        echo ::endgroup::
+
+        echo ::group::Files
+        ls -lah
+        echo ::endgroup::
+
+        echo ::group::Check evaluations
+        [[ -z "$toolchain" ]]
+        echo $?
+        [[ ( -f "rust-toolchain" || -f "rust-toolchain.toml") ]]
+        echo $?
+        [[ ( -f "rust-toolchain") ]]
+        echo $?
+        [[ ( -f "rust-toolchain.toml") ]]
+        echo $?
+        [[ -z "$toolchain" && ( -f "rust-toolchain" || -f "rust-toolchain.toml" ) ]]
+        echo $?
+        [[ -z "$toolchain" && ( -f "rust-toolchain" || -f "rust-toolchain.toml" ) ]]
+        echo $?
+        echo ::endgroup::
+
         # Check if value is set
         if [[ -n "$rust_src_dir" ]]
         then
