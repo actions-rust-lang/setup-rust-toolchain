@@ -167,6 +167,7 @@ runs:
     - name: rustup toolchain install ${{inputs.toolchain || 'stable'}}
       env:
         toolchain: ${{inputs.toolchain}}
+        toolchainnewname: ${{inputs.toolchain}}
         targets: ${{inputs.target}}
         components: ${{inputs.components}}
         override: ${{inputs.override}}
@@ -189,6 +190,11 @@ runs:
         echo $( [[ -z "$toolchain" && ( -f "rust-toolchain" || -f "rust-toolchain.toml" ) ]] ) $?
         echo $( [[ -z "$toolchain" && ( -f "rust-toolchain" || -f "rust-toolchain.toml" ) ]] ) $?
         echo ::endgroup::
+
+        echo XX"$toolchain"XX
+        echo XX"$TOOLCHAIN"XX
+        echo XX"$toolchainnewname"XX
+        echo XX"$TOOLCHAINNEWNAME"XX
 
         # Check if value is set
         if [[ -n "$rust_src_dir" ]]
