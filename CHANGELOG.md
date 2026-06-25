@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.17.0] - 2026-06-25
+
 * Add new parameter `cache-targets` that is propagated to `Swatinem/rust-cache` as `cache-targets` (#84).
   This allows disabling caching of the workspace `target` directory, e.g. when using `sccache`, while keeping the rest of the cache enabled.
 
