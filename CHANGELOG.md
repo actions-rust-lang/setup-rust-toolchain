@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+* Update `Swatinem/rust-cache` to v2.9.2, which uses Node.js 24.
+
 ## [1.17.0] - 2026-06-25
 
 * Add new parameter `cache-targets` that is propagated to `Swatinem/rust-cache` as `cache-targets` (#84).
