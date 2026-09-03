@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v6.0.0
     hooks:
       - id: check-case-conflict
       - id: check-executables-have-shebangs
@@ -11,8 +11,9 @@ repos:
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.29.2
+    rev: 0.38.0
     hooks:
       - id: check-dependabot
       - id: check-github-actions
-      - id: check-github-workflows
+      # Does not like the `null` value in the "rust" matrix in ci.yml
+      # - id: check-github-workflows

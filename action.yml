@@ -18,6 +18,10 @@ inputs:
   target:
     description: "Target triple to install for this toolchain"
     required: false
+  build-warnings:
+    description: "Sets the build.warnings config via the CARGO_BUILD_WARNINGS variable."
+    required: false
+    default: "deny"
   components:
     description: "Comma-separated list of components to be additionally installed"
     required: false
@@ -72,7 +76,7 @@ inputs:
   rustflags:
     description: "set RUSTFLAGS environment variable, set to empty string to avoid overwriting build.rustflags"
     required: false
-    default: "-D warnings"
+    default: ""
   override:
     description: "Setup the last installed toolchain as the default via `rustup override`"
     required: false
@@ -124,6 +128,7 @@ runs:
     - name: Setting Environment Variables
       env:
         _srt_NEW_RUSTFLAGS: ${{inputs.rustflags}}
+        _srt_CARGO_BUILD_WARNINGS: ${{inputs.build-warnings}}
       shell: bash
       run: |
         if [[ ! -v CARGO_INCREMENTAL ]]; then
@@ -140,6 +145,9 @@ runs:
         fi
         if [[ ( ! -v RUSTFLAGS ) && $_srt_NEW_RUSTFLAGS != "" ]]; then
           echo "RUSTFLAGS=$_srt_NEW_RUSTFLAGS" >> $GITHUB_ENV
+        fi
+        if [[ ( ! -v CARGO_BUILD_WARNINGS ) && $_srt_CARGO_BUILD_WARNINGS != "" ]]; then
+          echo "CARGO_BUILD_WARNINGS=$_srt_CARGO_BUILD_WARNINGS" >> $GITHUB_ENV
         fi
         # Enable faster sparse index on nightly
         # The value is ignored on stable and causes no problems
