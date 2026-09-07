@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-09-07
+
 * Use `CARGO_BUILD_WARNINGS` for enforcing warning free compilations (#98)
     This is a new variable supported by cargo 1.97+ [and sets the `build.warnings` config](https://blog.rust-lang.org/2026/07/09/Rust-1.97.0/#cargo-support-for-denying-warnings).
     It allows removing the `RUSTFLAGS="-D warnings"` default, which will improve compatibility with `target.*.rustflags` and `.cargo/config.toml` files.
@@ -14,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     This adds a new `build-warnings` input to configure the value for the `build.warnings` config.
 * Add error matcher for Rust panics
     This will highlight the location of the panic location during tests.
+* Reuse output of `rustc --version --verbose` calls (#103 by @ChihweiLHBird)
 
 ## [1.17.0] - 2026-06-25
 
