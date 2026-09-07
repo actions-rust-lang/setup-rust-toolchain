@@ -235,14 +235,15 @@ runs:
       working-directory: ${{inputs.rust-src-dir || '.'}}
       run: |
         echo "rustc-version=$(rustc --version)" >> $GITHUB_OUTPUT
-        rustc --version --verbose
+        _srt_VERBOSE=$(rustc --version --verbose)
+        echo "$_srt_VERBOSE"
         echo "cargo-version=$(cargo --version)" >> $GITHUB_OUTPUT
         cargo --version --verbose
         echo "rustup-version=$(rustup --version)" >> $GITHUB_OUTPUT
         rustup --version
 
-        _srt_DATE=$(rustc --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')
-        _srt_HASH=$(rustc --version --verbose | sed -ne 's/^commit-hash: //p')
+        _srt_DATE=$(echo "$_srt_VERBOSE" | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')
+        _srt_HASH=$(echo "$_srt_VERBOSE" | sed -ne 's/^commit-hash: //p')
         echo "cachekey=$(echo $_srt_DATE$_srt_HASH | head -c12)" >> $GITHUB_OUTPUT
 
     - name: Downgrade registry access protocol when needed
