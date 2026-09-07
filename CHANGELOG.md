@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     It allows removing the `RUSTFLAGS="-D warnings"` default, which will improve compatibility with `target.*.rustflags` and `.cargo/config.toml` files.
 
     This adds a new `build-warnings` input to configure the value for the `build.warnings` config.
+* Add error matcher for Rust panics
+    This will highlight the location of the panic location during tests.
 
 ## [1.17.0] - 2026-06-25
 
