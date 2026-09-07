@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+* Use `CARGO_BUILD_WARNINGS` for enforcing warning free compilations (#98)
+    This is a new variable supported by cargo 1.97+ [and sets the `build.warnings` config](https://blog.rust-lang.org/2026/07/09/Rust-1.97.0/#cargo-support-for-denying-warnings).
+    It allows removing the `RUSTFLAGS="-D warnings"` default, which will improve compatibility with `target.*.rustflags` and `.cargo/config.toml` files.
+
+    This adds a new `build-warnings` input to configure the value for the `build.warnings` config.
+
 ## [1.17.0] - 2026-06-25
 
 * Add new parameter `cache-targets` that is propagated to `Swatinem/rust-cache` as `cache-targets` (#84).

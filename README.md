@@ -52,6 +52,7 @@ Afterward, the `components` and `target` specified via inputs are installed in a
 | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
 | `toolchain`              | Comma-separated list of Rustup toolchain specifier e.g. `stable`, `nightly`, `1.42.0`. The last version is the default.                                                            | stable        |
 | `target`                 | Additional target support to install e.g. `wasm32-unknown-unknown`                                                                                                                 |               |
+| `build-warnings`         | Sets the `build.warnings` config via the `CARGO_BUILD_WARNINGS` variable. (set to empty string to avoid overwriting existing flags)                                                | deny          |
 | `components`             | Comma-separated string of additional components to install e.g. `clippy, rustfmt`                                                                                                  |               |
 | `cache`                  | Automatically configure Rust cache (using [`Swatinem/rust-cache`])                                                                                                                 | true          |
 | `cache-directories`      | Propagates the value to [`Swatinem/rust-cache`]                                                                                                                                    |               |
@@ -66,7 +67,7 @@ Afterward, the `components` and `target` specified via inputs are installed in a
 | `cache-save-if`          | Propagates the value to [`Swatinem/rust-cache`] as `save-if`                                                                                                                       | true          |
 | `cache-targets`          | Propagates the value to [`Swatinem/rust-cache`] as `cache-targets`                                                                                                                 | true          |
 | `matcher`                | Enable problem matcher to surface build messages and formatting issues                                                                                                             | true          |
-| `rustflags`              | Set the value of `RUSTFLAGS` (set to empty string to avoid overwriting existing flags)                                                                                             | "-D warnings" |
+| `rustflags`              | Set the value of `RUSTFLAGS` (set to empty string to avoid overwriting existing flags)                                                                                             | ""            |
 | `override`               | Setup the last installed toolchain as the default via `rustup override`                                                                                                            | true          |
 | `rust-src-dir`           | Path from root directory to directory with the Rust source directory (if its not in the root of the repository). Sets a default value for `cache-workspaces` that enables caching. |               |
 
