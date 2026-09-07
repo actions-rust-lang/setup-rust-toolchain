@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain@v2
       - run: cargo test --all-features
 
   # Check formatting with rustfmt
@@ -32,7 +32,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       # Ensure rustfmt is installed and setup problem matcher
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain@v2
         with:
           components: rustfmt
       - name: Rustfmt Check
@@ -72,21 +72,6 @@ Afterward, the `components` and `target` specified via inputs are installed in a
 | `rust-src-dir`           | Path from root directory to directory with the Rust source directory (if its not in the root of the repository). Sets a default value for `cache-workspaces` that enables caching. |               |
 
 [`Swatinem/rust-cache`]: https://github.com/Swatinem/rust-cache
-
-### RUSTFLAGS
-
-By default, this action sets the `RUSTFLAGS` environment variable to `-D warnings`.
-However, rustflags sources are mutually exclusive, so setting this environment variable omits any configuration through `target.*.rustflags` or `build.rustflags`.
-
-- If `RUSTFLAGS` is already set, no modifications of the variable are made and the original value remains.
-- If `RUSTFLAGS` is unset and the `rustflags` input is empty (i.e., the empty string), then it will remain unset.
-  Use this, if you want to prevent the value from being set because you make use of `target.*.rustflags` or `build.rustflags`.
-- Otherwise, the environment variable `RUSTFLAGS` is set to the content of `rustflags`.
-
-To prevent this from happening, set the `rustflags` input to an empty string, which will
-prevent the action from setting `RUSTFLAGS` at all, keeping any existing preferences.
-
-You can read more rustflags, and their load order, in the [Cargo reference].
 
 ## Outputs
 
