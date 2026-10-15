@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+* Explicitly install toolchains selected by `rust-toolchain` or
+  `rust-toolchain.toml` before querying installed versions, avoiding deprecated
+  implicit installation. This path now requires rustup 1.28.0 or newer;
+  pre-installed older or unrecognized versions fail with an update instruction.
+  Explicit toolchain inputs and the no-file stable fallback remain unchanged.
+
 ## [2.0.0] - 2026-09-07
 
 * Use `CARGO_BUILD_WARNINGS` for enforcing warning free compilations (#98)

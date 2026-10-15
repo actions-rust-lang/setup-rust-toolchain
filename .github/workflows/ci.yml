@@ -67,15 +67,33 @@ jobs:
         if: matrix.write-toolchain-file == false && matrix.rust == null
         shell: bash
         run: |-
-          rustcv="$(rustc --version)"
-          [[ "$rustcv" != *"nightly"* && "$rustcv" != *"beta"* ]]
+          active="$(rustup show active-toolchain)"
+          [[ "$active" == stable-* ]]
 
-      - name: Check toolchain file is being overridden
-        if: matrix.write-toolchain-file
+      - name: Check toolchain file is selected without an explicit input
+        if: matrix.write-toolchain-file && matrix.rust == null
         shell: bash
         run: |-
-          rustcv="$(rustc --version)"
-          [[ ! ( "$rustcv" == *"nightly"* && "$rustcv" == *"2024-01-10"* ) ]]
+          active="$(rustup show active-toolchain)"
+          [[ "$active" == nightly-2024-01-10-* ]]
+          rustup component list --installed | grep '^rustfmt-'
+          rustup component list --installed | grep '^rustc-dev-'
+          rustup component list --installed | grep '^clippy-'
+          rustup target list --installed | grep -x 'wasm32-unknown-unknown'
+          rustup target list --installed | grep -x 'thumbv7m-none-eabi'
+
+      - name: Check toolchain file is being overridden
+        if: matrix.write-toolchain-file && matrix.rust != null
+        shell: bash
+        env:
+          EXPECTED_TOOLCHAIN: ${{matrix.rust}}
+        run: |-
+          active="$(rustup show active-toolchain)"
+          [[ "$active" != nightly-2024-01-10-* ]]
+          active_rustc="$(rustc --version)"
+          requested_rustc="$(rustup run "$EXPECTED_TOOLCHAIN" rustc --version)"
+          [[ -n "$active_rustc" && -n "$requested_rustc" ]]
+          [[ "$active_rustc" == "$requested_rustc" ]]
 
       - shell: bash
         run: rustc --version && cargo --version
@@ -104,3 +122,244 @@ jobs:
             ./test-workspace
 
       - run: cargo clippy --manifest-path=./test-workspace/Cargo.toml
+
+  explicit-file-install:
+    name: Explicit file install (rustup ${{matrix.rustup}}, ${{matrix.os}})
+    runs-on: ${{matrix.os}}
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        rustup: ["1.27.1", "1.28.0", "1.29.1"]
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Prepare isolated Rustup and toolchain-file fixture
+        shell: bash
+        env:
+          TEST_RUSTUP_VERSION: ${{matrix.rustup}}
+        run: |
+          # This fixture installs toolchains but does not compile or run Cargo.
+          # Its Cargo home contains only its independently installed Rustup proxies.
+          test_root="$HOME/.cache/setup-rust-toolchain-contract/$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+          if [[ "$RUNNER_OS" == Windows ]]; then
+            # Native Rustup needs Windows paths, not the shell's /c/... aliases.
+            test_root="$(cygpath -m "$test_root")"
+          fi
+          mkdir -p "$test_root/bin" "$test_root/shim" "$test_root/logs" contract-workspace
+          case "$RUNNER_OS/$RUNNER_ARCH" in
+            Linux/X64) host=x86_64-unknown-linux-gnu; suffix= ;;
+            Windows/X64) host=x86_64-pc-windows-msvc; suffix=.exe ;;
+            macOS/X64) host=x86_64-apple-darwin; suffix= ;;
+            macOS/ARM64) host=aarch64-apple-darwin; suffix= ;;
+            *) echo "Unsupported fixture host: $RUNNER_OS/$RUNNER_ARCH" >&2; exit 1 ;;
+          esac
+          archive="https://static.rust-lang.org/rustup/archive/$TEST_RUSTUP_VERSION/$host/rustup-init$suffix"
+          curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused -fsSL "$archive" -o "$test_root/bin/rustup-init$suffix"
+          curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused -fsSL "$archive.sha256" -o "$test_root/bin/checksum"
+          expected="$(awk '{print $1}' "$test_root/bin/checksum")"
+          [[ "$expected" =~ ^[0-9a-f]{64}$ ]]
+          if [[ "$RUNNER_OS" == macOS ]]; then
+            actual="$(shasum -a 256 "$test_root/bin/rustup-init$suffix")"
+          else
+            actual="$(sha256sum "$test_root/bin/rustup-init$suffix")"
+          fi
+          [[ "${actual%% *}" == "$expected" ]]
+          echo "Verified rustup-init $TEST_RUSTUP_VERSION: $expected"
+          chmod +x "$test_root/bin/rustup-init$suffix"
+          export CARGO_HOME="$test_root/cargo" RUSTUP_HOME="$test_root/rustup"
+          # Refuse an inherited selector instead of silently changing precedence.
+          [[ -z "${RUSTUP_TOOLCHAIN+x}" ]]
+          "$test_root/bin/rustup-init$suffix" -y --no-modify-path --default-toolchain none
+          cat > "$test_root/shim/rustup" <<'SH'
+          #!/usr/bin/env bash
+          set -euo pipefail
+          printf '%s\n' "$*" >> "$TEST_RUSTUP_CALLS"
+          stdout="$(mktemp "$TEST_RUSTUP_LOG_ROOT/stdout.XXXXXX")"
+          stderr="$(mktemp "$TEST_RUSTUP_LOG_ROOT/stderr.XXXXXX")"
+          set +e
+          if [[ "${TEST_HELP_MODE:-real}" == malformed && "$*" == --help ]]; then
+            printf 'unrecognized Rustup help header\n' > "$stdout"
+            status=0
+          elif [[ "${TEST_FAIL_INSTALL:-false}" == true && "$*" == 'toolchain install --no-self-update' ]]; then
+            printf 'fixture install failure\n' > "$stderr"
+            status=42
+          else
+            "$TEST_REAL_RUSTUP" "$@" > "$stdout" 2> "$stderr"
+            status=$?
+          fi
+          set -e
+          cat "$stdout"
+          cat "$stderr" >&2
+          cat "$stdout" "$stderr" >> "$TEST_RUSTUP_LOG"
+          exit "$status"
+          SH
+          chmod +x "$test_root/shim/rustup"
+          {
+            echo "CARGO_HOME=$CARGO_HOME"
+            echo "RUSTUP_HOME=$RUSTUP_HOME"
+            echo "TEST_REAL_RUSTUP=$CARGO_HOME/bin/rustup$suffix"
+            echo "TEST_RUSTUP_CALLS=$test_root/logs/calls"
+            echo "TEST_RUSTUP_LOG=$test_root/logs/output"
+            echo "TEST_RUSTUP_LOG_ROOT=$test_root/logs"
+          } >> "$GITHUB_ENV"
+          if [[ "$RUNNER_OS" == Windows ]]; then
+            cygpath -w "$CARGO_HOME/bin" >> "$GITHUB_PATH"
+            cygpath -w "$test_root/shim" >> "$GITHUB_PATH"
+          else
+            echo "$CARGO_HOME/bin" >> "$GITHUB_PATH"
+            echo "$test_root/shim" >> "$GITHUB_PATH"
+          fi
+          cat > contract-workspace/rust-toolchain.toml <<'TOML'
+          [toolchain]
+          channel = "nightly-2024-01-10"
+          profile = "minimal"
+          components = ["rustfmt"]
+          targets = ["wasm32-unknown-unknown"]
+          TOML
+
+      - name: Verify fixture command selection
+        shell: bash
+        run: |
+          selected_rustup="$(command -v rustup)"
+          if [[ "$RUNNER_OS" == Windows ]]; then
+            selected_rustup="$(cygpath -m "$selected_rustup")"
+          fi
+          [[ "$selected_rustup" == "${TEST_RUSTUP_LOG_ROOT%/logs}/shim/rustup" ]]
+          shopt -s nullglob dotglob
+          installed_toolchains=("$RUSTUP_HOME"/toolchains/*)
+          [[ "${#installed_toolchains[@]}" -eq 0 ]]
+
+      - name: Install the file-selected missing toolchain
+        id: file-install
+        uses: ./
+        # Only the unsupported-version fixture is expected to fail.
+        continue-on-error: ${{matrix.rustup == '1.27.1'}}
+        with:
+          rust-src-dir: contract-workspace
+          override: false
+          components: clippy
+          target: thumbv7m-none-eabi
+          cache: false
+          matcher: false
+
+      - name: Assert explicit installation or actionable unsupported-version failure
+        if: always() && steps.file-install.outcome != 'skipped'
+        shell: bash
+        env:
+          TEST_RUSTUP_VERSION: ${{matrix.rustup}}
+          TEST_ACTION_OUTCOME: ${{steps.file-install.outcome}}
+          TEST_RUSTC_VERSION: ${{steps.file-install.outputs.rustc-version}}
+        run: |
+          [[ -s "$TEST_RUSTUP_CALLS" && -s "$TEST_RUSTUP_LOG" ]]
+          ! grep -E 'has been auto-installed|implicitly installed|auto-installation is deprecated' "$TEST_RUSTUP_LOG"
+          [[ "$(head -n 1 "$TEST_RUSTUP_CALLS")" == '--help' ]]
+          if [[ "$TEST_RUSTUP_VERSION" == 1.27.1 ]]; then
+            [[ "$TEST_ACTION_OUTCOME" == failure ]]
+            # The compatibility guard must stop before any installation or query.
+            [[ "$(wc -l < "$TEST_RUSTUP_CALLS")" -eq 1 ]]
+          else
+            [[ "$TEST_ACTION_OUTCOME" == success ]]
+            [[ "$(sed -n '2p' "$TEST_RUSTUP_CALLS")" == 'toolchain install --no-self-update' ]]
+            ! grep -x 'show active-toolchain' "$TEST_RUSTUP_CALLS"
+            cd contract-workspace
+            [[ "$(rustup show active-toolchain)" == nightly-2024-01-10-* ]]
+            installed_rustc="$(rustc --version)"
+            [[ -n "$installed_rustc" && -n "$TEST_RUSTC_VERSION" ]]
+            [[ "$installed_rustc" == "$TEST_RUSTC_VERSION" ]]
+            rustup component list --installed | grep '^rustfmt-'
+            rustup component list --installed | grep '^clippy-'
+            ! rustup component list --installed | grep '^rust-docs-'
+            rustup target list --installed | grep -x 'wasm32-unknown-unknown'
+            rustup target list --installed | grep -x 'thumbv7m-none-eabi'
+            # File installation must not create a persistent directory override.
+            [[ "$(rustup override list)" == 'no overrides' ]]
+          fi
+
+      - name: Switch the fixture to a legacy plaintext file
+        if: matrix.rustup != '1.27.1'
+        shell: bash
+        run: |
+          rm contract-workspace/rust-toolchain.toml
+          echo nightly-2024-01-10 > contract-workspace/rust-toolchain
+          : > "$TEST_RUSTUP_CALLS"
+          : > "$TEST_RUSTUP_LOG"
+
+      - name: Install the legacy file-selected toolchain
+        if: matrix.rustup != '1.27.1'
+        id: legacy-install
+        uses: ./
+        with:
+          rust-src-dir: contract-workspace
+          override: false
+          cache: false
+          matcher: false
+
+      - name: Assert legacy selection remains explicit
+        if: matrix.rustup != '1.27.1'
+        shell: bash
+        run: |
+          [[ "$(head -n 1 "$TEST_RUSTUP_CALLS")" == '--help' ]]
+          [[ "$(sed -n '2p' "$TEST_RUSTUP_CALLS")" == 'toolchain install --no-self-update' ]]
+          ! grep -x 'show active-toolchain' "$TEST_RUSTUP_CALLS"
+          ! grep -E 'has been auto-installed|implicitly installed|auto-installation is deprecated' "$TEST_RUSTUP_LOG"
+          cd contract-workspace
+          [[ "$(rustup show active-toolchain)" == nightly-2024-01-10-* ]]
+
+      - name: Prepare malformed-help control
+        if: matrix.os == 'ubuntu-latest' && matrix.rustup == '1.29.1'
+        shell: bash
+        run: |
+          echo TEST_HELP_MODE=malformed >> "$GITHUB_ENV"
+          : > "$TEST_RUSTUP_CALLS"
+          : > "$TEST_RUSTUP_LOG"
+
+      - name: Reject an unrecognized Rustup version before installation
+        if: matrix.os == 'ubuntu-latest' && matrix.rustup == '1.29.1'
+        id: malformed-help
+        continue-on-error: true
+        uses: ./
+        with:
+          rust-src-dir: contract-workspace
+          cache: false
+          matcher: false
+
+      - name: Assert malformed-help failure and prepare install-failure control
+        if: matrix.os == 'ubuntu-latest' && matrix.rustup == '1.29.1'
+        shell: bash
+        env:
+          TEST_ACTION_OUTCOME: ${{steps.malformed-help.outcome}}
+        run: |
+          [[ "$TEST_ACTION_OUTCOME" == failure ]]
+          [[ "$(cat "$TEST_RUSTUP_CALLS")" == '--help' ]]
+          echo TEST_HELP_MODE=real >> "$GITHUB_ENV"
+          echo TEST_FAIL_INSTALL=true >> "$GITHUB_ENV"
+          : > "$TEST_RUSTUP_CALLS"
+          : > "$TEST_RUSTUP_LOG"
+
+      - name: Propagate an explicit install failure
+        if: matrix.os == 'ubuntu-latest' && matrix.rustup == '1.29.1'
+        id: install-failure
+        continue-on-error: true
+        uses: ./
+        with:
+          rust-src-dir: contract-workspace
+          cache: false
+          matcher: false
+
+      - name: Assert install failure remains binding
+        if: matrix.os == 'ubuntu-latest' && matrix.rustup == '1.29.1'
+        shell: bash
+        env:
+          TEST_ACTION_OUTCOME: ${{steps.install-failure.outcome}}
+        run: |
+          [[ "$TEST_ACTION_OUTCOME" == failure ]]
+          [[ "$(head -n 1 "$TEST_RUSTUP_CALLS")" == '--help' ]]
+          [[ "$(sed -n '2p' "$TEST_RUSTUP_CALLS")" == 'toolchain install --no-self-update' ]]
+          [[ "$(wc -l < "$TEST_RUSTUP_CALLS")" -eq 2 ]]
+          grep -x 'fixture install failure' "$TEST_RUSTUP_LOG"
