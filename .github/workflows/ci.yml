@@ -174,7 +174,7 @@ jobs:
           chmod +x "$test_root/bin/rustup-init$suffix"
           export CARGO_HOME="$test_root/cargo" RUSTUP_HOME="$test_root/rustup"
           # Refuse an inherited selector instead of silently changing precedence.
-          [[ ! -v RUSTUP_TOOLCHAIN ]]
+          [[ -z "${RUSTUP_TOOLCHAIN+x}" ]]
           "$test_root/bin/rustup-init$suffix" -y --no-modify-path --default-toolchain none
           cat > "$test_root/shim/rustup" <<'SH'
           #!/usr/bin/env bash
