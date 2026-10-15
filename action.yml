@@ -7,9 +7,6 @@ branding:
   icon: "play"
   color: "gray-dark"
 
-# Add option to install directly from rust-toolchain file
-# Blocked on rustup support: https://github.com/rust-lang/rustup/issues/2686
-#
 # The action is heavily inspired by https://github.com/dtolnay/rust-toolchain
 inputs:
   toolchain:
@@ -204,11 +201,24 @@ runs:
         fi
         if [[ -z "$_srt_toolchain" && ( -f "rust-toolchain" || -f "rust-toolchain.toml") ]]
         then
-          # Install the toolchain as specified in the file
-          # rustup show is the old way that implicitly installed a toolchain
-          # rustup toolchain install is the new explicit way
-          # https://github.com/rust-lang/rustup/issues/3635#issuecomment-2343511297
-          rustup show active-toolchain || rustup toolchain install
+          # Rustup 1.28 added explicit installation of the active file selection.
+          # --version can itself install a missing toolchain; --help cannot.
+          _srt_rustup_help="$(rustup --help)"
+          if [[ "$_srt_rustup_help" =~ ^rustup[[:space:]]+([0-9]+)\.([0-9]+)\.([0-9]+)([[:space:]]|$) ]]
+          then
+            _srt_rustup_major="${BASH_REMATCH[1]}"
+            _srt_rustup_minor="${BASH_REMATCH[2]}"
+          else
+            echo "::error::Toolchain-file installation requires rustup 1.28.0 or newer with a recognizable release version. Update rustup on this runner." >&2
+            exit 1
+          fi
+          if (( 10#$_srt_rustup_major < 1 || (10#$_srt_rustup_major == 1 && 10#$_srt_rustup_minor < 28) ))
+          then
+            echo "::error::Toolchain-file installation requires rustup 1.28.0 or newer. Update rustup on this runner." >&2
+            exit 1
+          fi
+          # Preserve Rustup's channel, profile, components, targets and precedence.
+          rustup toolchain install --no-self-update
           if [[ -n $_srt_components ]]; then
             rustup component add ${_srt_components//,/ }
           fi

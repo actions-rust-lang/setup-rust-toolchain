@@ -90,6 +90,18 @@ PRs to add support for more environments are welcome.
 - bash 5
 - brew (macOS only)
 - rustup or curl
+  - Toolchain-file installation requires rustup 1.28.0 or newer. Older
+    pre-installed versions fail with an update instruction; the action does not
+    update an existing rustup installation. Explicit `toolchain` inputs and the
+    no-file `stable` fallback keep their existing requirements.
+  - The version check uses the release header from `rustup --help`; an
+    unrecognized custom or prerelease version fails before installation.
+  - With no explicit `toolchain` input, installation preserves rustup's normal
+    environment and directory-override precedence as well as the file's channel,
+    profile, components and targets. A toolchain file does not override an
+    existing `RUSTUP_TOOLCHAIN` selector or a higher-priority directory override.
+  - If rustup is absent, the existing bootstrap installs it with
+    `--default-toolchain none` before toolchain selection.
 - using other node actions
 
 ## License
